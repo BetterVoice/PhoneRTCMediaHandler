@@ -1,19 +1,18 @@
 /**
- * Creates a new object and then initializes it.
+ * @fileoverview MediaHandler
  */
-function create(constructor) {
-	return function() {
-		var instance = Object.create(constructor.prototype);
-    var result = constructor.apply(instance);
-    return typeof result === 'object' ? result : instance;
-	}
-}
 
+/**
+ * MediaHandler
+ * @class PeerConnection helper Class.
+ * @param {SIP.Session} session
+ * @param {Object} [options]
+ */
 module.exports = function(SIP) {
 	/**
 	 * Implements the PhoneRTC media handler constructor.
 	 */
-	var PhoneRTCMediaHandlerImpl = function(session, options) {
+	var PhoneRTCMediaHandler = function(session, options) {
 		var events = [ ];
   	options = options || {};
 
@@ -33,7 +32,8 @@ module.exports = function(SIP) {
   	if(!stunServers) { stunServers = config.stunServers; }
   	if(!turnServers) { turnServers = config.turnServers; }
 
-  	/* Change 'url' to 'urls' whenever this issue is solved:
+  	/* 
+  	 * Change 'url' to 'urls' whenever this issue is solved:
   	 * https://code.google.com/p/webrtc/issues/detail?id=2096
   	 */
   	servers.push({ 'url': stunServers });
@@ -52,8 +52,10 @@ module.exports = function(SIP) {
   	this.phonertc = {};
 	}
 
-	// Instantiate a PhoneRTC media handler and return the instance
-	// to sip.js.
-	var PhoneRTCMediaHandler = create(PhoneRTCMediaHandlerImpl);
+	PhoneRTCMediaHandler.prototype = Object.create(SIP.MediaHandler.prototype, {
+
+	});
+
+	// Return the PhoneRTC media handler implementation.
 	return PhoneRTCMediaHandler;
 };
