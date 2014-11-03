@@ -13,47 +13,55 @@ module.exports = function(SIP) {
 	 * Implements the PhoneRTC media handler constructor.
 	 */
 	var PhoneRTCMediaHandler = function(session, options) {
-		var events = [ ];
-  	options = options || {};
-
+		// Create a logger.
   	this.logger = session.ua.getLogger('sip.invitecontext.mediahandler', session.id);
-  	this.session = session;
-  	this.ready = true;
+
+  	// Initialize the media handler.
   	this.audioMuted = false;
-  	this.videoMuted = false;
+  	this.phonertc = { };
+  	this.ready = true;
 
-  	// old init() from here on
-  	var idx, length, server,
-  	  	servers = [],
-  	  	stunServers = options.stunServers || null,
-  	  	turnServers = options.turnServers || null,
-  	  	config = this.session.ua.configuration;
-  	this.RTCConstraints = options.RTCConstraints || {};
-  	if(!stunServers) { stunServers = config.stunServers; }
-  	if(!turnServers) { turnServers = config.turnServers; }
-
-  	/* 
-  	 * Change 'url' to 'urls' whenever this issue is solved:
-  	 * https://code.google.com/p/webrtc/issues/detail?id=2096
-  	 */
-  	servers.push({ 'url': stunServers });
-
-  	length = turnServers.length;
-  	for(idx = 0; idx < length; idx++) {
-  	  server = turnServers[idx];
-  	  servers.push({
-  	    'url': server.urls,
-  	    'username': server.username,
-  	    'credential': server.password
-  	  });
+  	// Try to use a turn server provided by sip.js.
+  	var servers = [];
+  	var turnServers = [];
+  	if(options) {
+  		turnServers = options.turnServers;
+  	} else {
+  		turnServers = session.ua.configuration.turnServers;
   	}
-
-  	this.initEvents(events);
-  	this.phonertc = {};
+  	for(var index = 0; index < turnServers.length; index++) {
+  		servers.push({
+  			'host': turnServers[index].urls,
+  	    'username': turnServers[index].username,
+  	    'password': turnServers[index].password
+  		});
+  	}
+  	if(servers.length > 0) {
+  		this.turnServer = servers[0];
+  	} 
+  	// In case the turn server is to be hard coded.
+  	/* else {
+  		this.turnServer = {
+  			'host': 'turn:turn.example.com:3478',
+        'username': 'user',
+        'password': 'pass'
+  		};
+  	} */
 	}
 
 	PhoneRTCMediaHandler.prototype = Object.create(SIP.MediaHandler.prototype, {
-
+		/**
+		 * render() is called by sip.js so it must be defined but 
+		 * rendering is handled by the PhoneRTC plugin.
+		 */
+		render: {writable: true, value: function render () { }},
+  	isReady: {writable: true, value: function isReady () {
+  	  return this.ready;
+  	}},
+  	close: {writable: true, value: function close () {
+  	  this.logger.log('INFO: Closing the current session.');
+  	  this.phonertc.session.close();
+  	}}
 	});
 
 	// Return the PhoneRTC media handler implementation.
