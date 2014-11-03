@@ -16,10 +16,8 @@ module.exports = function(SIP) {
 		// Create a logger.
   	this.logger = session.ua.getLogger('sip.invitecontext.mediahandler', session.id);
 
-  	// Initialize the media handler.
+  	// Initialize the media flags.
   	this.audioMuted = false;
-  	this.phonertc = { };
-  	this.ready = true;
 
   	// Try to use a turn server provided by sip.js.
   	var servers = [];
@@ -47,6 +45,12 @@ module.exports = function(SIP) {
         'password': 'pass'
   		};
   	} */
+
+  	// Finish initialization.
+  	this.phonertc = {
+  		'state': 'disconnected'
+  	};
+  	this.ready = true;
 	}
 
 	PhoneRTCMediaHandler.prototype = Object.create(SIP.MediaHandler.prototype, {
