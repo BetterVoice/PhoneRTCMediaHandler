@@ -16,10 +16,7 @@ module.exports = function(SIP) {
 		// Create a logger.
   	this.logger = session.ua.getLogger('sip.invitecontext.mediahandler', session.id);
 
-  	// Initialize the media flags.
-  	this.audioMuted = false;
-
-  	// Try to use a turn server provided by sip.js.
+  	// Try to use a Turn server provided by sip.js.
   	var servers = [];
   	var turnServers = [];
   	if(options) {
@@ -82,7 +79,7 @@ module.exports = function(SIP) {
 
   	isMuted: {writable: true, value: function isMuted () {
   	  return {
-  	    audio: this.audioMuted,
+  	    audio: this.phonertc.state === 'muted',
   	    video: true
   	  };
   	}},
