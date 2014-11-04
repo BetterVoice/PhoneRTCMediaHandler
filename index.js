@@ -48,6 +48,12 @@ module.exports = function(SIP) {
 
   	// Finish initialization.
   	this.phonertc = {
+  		/*
+  		 * Possible states are:
+  		 * - disconnected
+  		 * - connected
+  		 * - muted
+       */
   		'state': 'disconnected'
   	};
   	this.ready = true;
@@ -59,12 +65,48 @@ module.exports = function(SIP) {
 		 * rendering is handled by the PhoneRTC plugin.
 		 */
 		render: {writable: true, value: function render () { }},
+
   	isReady: {writable: true, value: function isReady () {
   	  return this.ready;
   	}},
+
   	close: {writable: true, value: function close () {
-  	  this.logger.log('INFO: Closing the current session.');
-  	  this.phonertc.session.close();
+  		var state = this.phonertc.state;
+  		if(state !== 'disconnected') {
+  			var session = this.phonertc.session;
+  			session.close();
+  			// Update our state.
+  			this.phonertc.state = 'disconnected';
+  		}
+  	}},
+
+  	isMuted: {writable: true, value: function isMuted () {
+  	  return {
+  	    audio: this.audioMuted,
+  	    video: true
+  	  };
+  	}},
+
+  	mute: {writable: true, value: function mute (options) {
+  		var state = this.phonertc.state;
+  		if(state === 'connected') {
+  			var session = this.phonertc.session;
+  			session.streams.audio = false;
+				session.renegotiate();
+  			// Update our state.
+  			this.phonertc.state = 'muted';
+  		}
+  	}},
+
+  	unmute: {writable: true, value: function unmute (options) {
+  		var state = this.phonertc.state;
+  		if(state === 'muted') {
+  			var session = this.phonertc.session;
+  			session.streams.audio = true;
+				session.renegotiate();
+  			// Update our state.
+  			this.phonertc.state = 'connected';
+  		}
   	}}
 	});
 
