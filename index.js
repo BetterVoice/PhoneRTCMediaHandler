@@ -87,6 +87,7 @@ module.exports = function(SIP) {
   		} else if(role === 'callee') {
   			session.receiveMessage({'type': 'offer', 'sdp': sdp});
   		}
+  		this.phonertc.state = 'connected';
   	}},
 
   	isMuted: {writable: true, value: function isMuted() {
@@ -102,7 +103,6 @@ module.exports = function(SIP) {
   			var session = this.phonertc.session;
   			session.streams.audio = false;
 				session.renegotiate();
-  			// Update our state.
   			this.phonertc.state = 'muted';
   		}
   	}},
@@ -113,7 +113,6 @@ module.exports = function(SIP) {
   			var session = this.phonertc.session;
   			session.streams.audio = true;
 				session.renegotiate();
-  			// Update our state.
   			this.phonertc.state = 'connected';
   		}
   	}},
