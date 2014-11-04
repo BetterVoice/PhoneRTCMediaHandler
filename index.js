@@ -65,6 +65,7 @@ module.exports = function(SIP) {
   		if(state !== 'disconnected') {
   			var session = this.phonertc.session;
   			session.close();
+  			session = null;
   			// Update our state.
   			this.phonertc.state = 'disconnected';
   		}
