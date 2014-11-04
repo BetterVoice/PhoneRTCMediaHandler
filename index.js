@@ -78,9 +78,7 @@ module.exports = function(SIP) {
 
   	setDescription: {writable: true, value: function setDescription(sdp) {
   		var role = this.phonertc.role;
-  		if(!role) {
-  			this.startSession(false);
-  		}
+  		if(!role) { this.startSession(false); }
   		var session = this.phonertc.session;
   		if(role === 'caller') {
   			session.receiveMessage({'type': 'answer', 'sdp': sdp});
