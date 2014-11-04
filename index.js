@@ -61,13 +61,13 @@ module.exports = function(SIP) {
 		 * render() is called by sip.js so it must be defined but 
 		 * rendering is handled by the PhoneRTC plugin.
 		 */
-		render: {writable: true, value: function render () { }},
+		render: {writable: true, value: function render() { }},
 
-  	isReady: {writable: true, value: function isReady () {
+  	isReady: {writable: true, value: function isReady() {
   	  return this.ready;
   	}},
 
-  	close: {writable: true, value: function close () {
+  	close: {writable: true, value: function close() {
   		var state = this.phonertc.state;
   		if(state !== 'disconnected') {
   			var session = this.phonertc.session;
@@ -77,14 +77,22 @@ module.exports = function(SIP) {
   		}
   	}},
 
-  	isMuted: {writable: true, value: function isMuted () {
+  	getDescription: {writable: true, value: function getDescription(mediaHint) {
+
+  	}},
+
+  	setDescription: {writable: true, value: function setDescription(sdp) {
+
+  	}},
+
+  	isMuted: {writable: true, value: function isMuted() {
   	  return {
   	    audio: this.phonertc.state === 'muted',
   	    video: true
   	  };
   	}},
 
-  	mute: {writable: true, value: function mute (options) {
+  	mute: {writable: true, value: function mute(options) {
   		var state = this.phonertc.state;
   		if(state === 'connected') {
   			var session = this.phonertc.session;
@@ -95,7 +103,7 @@ module.exports = function(SIP) {
   		}
   	}},
 
-  	unmute: {writable: true, value: function unmute (options) {
+  	unmute: {writable: true, value: function unmute(options) {
   		var state = this.phonertc.state;
   		if(state === 'muted') {
   			var session = this.phonertc.session;
