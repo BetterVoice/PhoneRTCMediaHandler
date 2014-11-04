@@ -72,11 +72,21 @@ module.exports = function(SIP) {
   	}},
 
   	getDescription: {writable: true, value: function getDescription(mediaHint) {
-
+  		var role = this.phonertc.role;
+  		if(!role) { this.startSession(true); }
   	}},
 
   	setDescription: {writable: true, value: function setDescription(sdp) {
-
+  		var role = this.phonertc.role;
+  		if(!role) {
+  			this.startSession(false);
+  		}
+  		var session = this.phonertc.session;
+  		if(role === 'caller') {
+  			session.receiveMessage({'type': 'answer', 'sdp': sdp});
+  		} else if(role === 'callee') {
+  			session.receiveMessage({'type': 'offer', 'sdp': sdp});
+  		}
   	}},
 
   	isMuted: {writable: true, value: function isMuted() {
@@ -106,6 +116,20 @@ module.exports = function(SIP) {
   			// Update our state.
   			this.phonertc.state = 'connected';
   		}
+  	}},
+
+  	// Local Methods.
+  	startSession: {writable: true, value: function startSession(isInitiator) {
+  		this.phonertc.role = isInitiator ? 'caller' : 'callee';
+  		var config = {
+  			isisInitiator: isInitiator,
+    		turn: this.turnServer,
+    		streams: {
+    			audio: true,
+    			video: false
+    		}
+  		};
+  		this.phonertc.session = new cordova.plugins.phonertc.Session(config);
   	}}
 	});
 
