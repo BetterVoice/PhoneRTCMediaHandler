@@ -17,23 +17,19 @@ module.exports = function(SIP) {
   	this.logger = session.ua.getLogger('sip.invitecontext.mediahandler', session.id);
 
   	// Try to use a Turn server provided by sip.js.
-  	var servers = [];
   	var turnServers = [];
   	if(options) {
   		turnServers = options.turnServers;
   	} else {
   		turnServers = session.ua.configuration.turnServers;
   	}
-  	for(var index = 0; index < turnServers.length; index++) {
-  		servers.push({
-  			'host': turnServers[index].urls,
-  	    'username': turnServers[index].username,
-  	    'password': turnServers[index].password
-  		});
+  	if(turnServers.length > 0) {
+  		this.turnServer = {
+  			'host': turnServers[0].urls,
+  	    'username': turnServers[0].username,
+  	    'password': turnServers[0].password
+  		};
   	}
-  	if(servers.length > 0) {
-  		this.turnServer = servers[0];
-  	} 
   	// In case the turn server is to be hard coded.
   	/* else {
   		this.turnServer = {
@@ -53,7 +49,6 @@ module.exports = function(SIP) {
        */
   		'state': 'disconnected'
   	};
-  	this.ready = true;
 	}
 
 	PhoneRTCMediaHandler.prototype = Object.create(SIP.MediaHandler.prototype, {
@@ -63,9 +58,7 @@ module.exports = function(SIP) {
 		 */
 		render: {writable: true, value: function render() { }},
 
-  	isReady: {writable: true, value: function isReady() {
-  	  return this.ready;
-  	}},
+  	isReady: {writable: true, value: function isReady() { return true; }},
 
   	close: {writable: true, value: function close() {
   		var state = this.phonertc.state;
