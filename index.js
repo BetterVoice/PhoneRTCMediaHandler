@@ -15,6 +15,7 @@ module.exports = function(SIP) {
 	var PhoneRTCMediaHandler = function(session, options) {
 		// Create a logger.
   	this.logger = session.ua.getLogger('sip.invitecontext.mediahandler', session.id);
+    this.logger.log('Loading the PhoneRTC 2.0 Media Handler.');
 
   	// Try to use a Turn server provided by sip.js.
   	var turnServers = [];
@@ -74,7 +75,6 @@ module.exports = function(SIP) {
   	getDescription: {writable: true, value: function getDescription(mediaHint) {
   		var role = this.phonertc.role;
   		if(!role) { this.startSession(true); }
-      this.logger.log("getDescription(mediaHint) executed.");
   	}},
 
   	setDescription: {writable: true, value: function setDescription(sdp) {
