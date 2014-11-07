@@ -124,6 +124,9 @@ module.exports = function(SIP) {
     			video: false
     		}
   		};
+
+      var cordova = require('cordova');
+      
       window.console.log('\n');
       window.console.log('cordova:');
       window.console.log(cordova);
