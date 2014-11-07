@@ -124,18 +124,18 @@ module.exports = function(SIP) {
     			video: false
     		}
   		};
+      window.console.log('\n');
+      window.console.log('cordova:');
+      window.console.log(cordova);
+      window.console.log('\n');
+      window.console.log('plugins:');
+      window.console.log(cordova.plugins);
+      window.console.log('\n');
+      window.console.log('phonertc');
+      window.console.log(cordova.plugins.phonertc);
+      window.console.log('\n');
 
-      var test = cordova.require('com.dooble.audiotoggle');
-      window.console.log(test);
-
-      // window.console.log('cordova:');
-      // window.console.log(cordova);
-      // window.console.log('plugins:');
-      // window.console.log(cordova.plugins);
-      // window.console.log('phonertc');
-      // window.console.log(cordova.plugins.phonertc);
-
-  		// this.phonertc.session = new cordova.plugins.phonertc.Session(config);
+  		this.phonertc.session = new cordova.plugins.phonertc.Session(config);
   	}}
 	});
 
