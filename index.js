@@ -24,21 +24,19 @@ module.exports = function(SIP) {
   	} else {
   		turnServers = session.ua.configuration.turnServers;
   	}
-  	if(turnServers.length > 0) {
+  	if(turnServers && turnServers.length > 0) {
   		this.turnServer = {
   			'host': turnServers[0].urls,
   	    'username': turnServers[0].username,
   	    'password': turnServers[0].password
   		};
-  	}
-  	// In case the turn server is to be hard coded.
-  	/* else {
+  	} else {
   		this.turnServer = {
-  			'host': 'turn:turn.example.com:3478',
-        'username': 'user',
-        'password': 'pass'
+  			'host': 'turn:numb.viagenie.ca',
+        'username': 'webrtc@live.com',
+        'password': 'muazkh'
   		};
-  	} */
+  	}
 
   	// Finish initialization.
   	this.phonertc = {
