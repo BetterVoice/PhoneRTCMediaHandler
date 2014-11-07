@@ -131,9 +131,6 @@ module.exports = function(SIP) {
       window.console.log('plugins:');
       window.console.log(cordova.plugins);
       window.console.log('\n');
-      window.console.log('phonertc');
-      window.console.log(cordova.plugins.phonertc);
-      window.console.log('\n');
 
   		this.phonertc.session = new cordova.plugins.phonertc.Session(config);
   	}}
