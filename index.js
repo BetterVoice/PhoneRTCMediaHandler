@@ -127,6 +127,7 @@ module.exports = function(SIP) {
 
   		this.phonertc.session = new cordova.plugins.phonertc.Session(config);
       this.phonertc.session.on('sendMessage', function (data) { 
+        window.console.log('Message:');
         window.console.log(JSON.stringify(data));
       });
   	}}
