@@ -117,18 +117,13 @@ module.exports = function(SIP) {
   	startSession: {writable: true, value: function startSession(isInitiator) {
   		this.phonertc.role = isInitiator ? 'caller' : 'callee';
   		var config = {
-  			isisInitiator: isInitiator,
+  			isInitiator: isInitiator,
     		turn: this.turnServer,
     		streams: {
     			audio: true,
     			video: false
     		}
   		};
-      
-      window.console.log('cordova:');
-      window.console.log(cordova);
-      window.console.log('plugins:')
-      window.console.log(plugins);
 
   		this.phonertc.session = new cordova.plugins.phonertc.Session(config);
   	}}
