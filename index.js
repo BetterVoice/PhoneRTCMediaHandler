@@ -125,7 +125,7 @@ module.exports = function(SIP) {
     		}
   		};
 
-      var test = cordova.require('com.dooble.phonertc');
+      var test = cordova.require('com.dooble.audiotoggle');
       window.console.log(test);
 
       // window.console.log('cordova:');
