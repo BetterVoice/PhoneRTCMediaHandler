@@ -125,19 +125,9 @@ module.exports = function(SIP) {
     		}
   		};
 
-      window.console.log('\n');
-      window.console.log('cordova:');
-      window.console.log(cordova);
-      window.console.log('\n');
-      window.console.log('plugins:');
-      window.console.log(cordova.plugins);
-      window.console.log('\n');
-
-      if(window.cordova && window.cordova.plugins) {
-        window.console('WTF1!');
-      } else {
-        window.console('WTF2!');
-      }
+      var test = cordova.require('com.dooble.phonertc.PhoneRTCPlugin');
+      console.log('Phone RTC Plugin');
+      console.log(test);
 
   		this.phonertc.session = new cordova.plugins.phonertc.Session(config);
   	}}
