@@ -124,10 +124,11 @@ module.exports = function(SIP) {
     			video: false
     		}
   		};
-
-      var test = cordova.require('com.dooble.phonertc.PhoneRTCPlugin');
-      console.log('Phone RTC Plugin');
-      console.log(test);
+      
+      window.console.log('cordova:');
+      window.console.log(cordova);
+      window.console.log('plugins:')
+      window.console.log(plugins);
 
   		this.phonertc.session = new cordova.plugins.phonertc.Session(config);
   	}}
