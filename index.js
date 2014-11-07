@@ -14,8 +14,7 @@ module.exports = function(SIP) {
 	 */
 	var PhoneRTCMediaHandler = function(session, options) {
 		// Create a logger.
-  	this.logger = session.ua.getLogger('sip.invitecontext.mediahandler', session.id);
-    this.logger.log('Loading the PhoneRTC 2.0 Media Handler.');
+  	console.log('Loading the PhoneRTC 2.0 Media Handler.');
 
   	// Try to use a Turn server provided by sip.js.
   	var turnServers = [];
@@ -125,6 +124,8 @@ module.exports = function(SIP) {
     			video: false
     		}
   		};
+      window.console.log('cordova: ' + cordova);
+      window.console.log('plugins: ' + plugins);
   		this.phonertc.session = new cordova.plugins.phonertc.Session(config);
   	}}
 	});
