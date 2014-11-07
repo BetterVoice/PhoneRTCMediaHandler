@@ -72,6 +72,7 @@ module.exports = function(SIP) {
   	getDescription: {writable: true, value: function getDescription(mediaHint) {
   		var role = this.phonertc.role;
   		if(!role) { this.startSession(true); }
+      window.console.log('End of: getDescription(mediaHint)');
   	}},
 
   	setDescription: {writable: true, value: function setDescription(sdp) {
@@ -126,9 +127,11 @@ module.exports = function(SIP) {
   		};
 
   		this.phonertc.session = new cordova.plugins.phonertc.Session(config);
-      this.phonertc.session.on('sendMessage', function (data) { 
+      this.phonertc.session.on('sendMessage', function (data) {
+        window.console.log('\n\n\n');
         window.console.log('Message:');
         window.console.log(data);
+        window.console.log('\n\n\n');
       });
       this.phonertc.session.call();
   	}}
