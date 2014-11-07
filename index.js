@@ -121,7 +121,7 @@ module.exports = function(SIP) {
     		turn: this.turnServer,
     		streams: {
     			audio: true,
-    			video: false
+    			video: true
     		}
   		};
 
