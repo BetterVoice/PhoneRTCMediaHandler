@@ -14,7 +14,7 @@ module.exports = function(SIP) {
 	 */
 	var PhoneRTCMediaHandler = function(session, options) {
 		// Create a logger.
-  	console.log('Loading the PhoneRTC 2.0 Media Handler.');
+  	window.console.log('Loading the PhoneRTC 2.0 Media Handler.');
 
   	// Try to use a Turn server provided by sip.js.
   	var turnServers = [];
