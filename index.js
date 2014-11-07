@@ -126,14 +126,20 @@ module.exports = function(SIP) {
     		}
   		};
 
-  		this.phonertc.session = new cordova.plugins.phonertc.Session(config);
-      this.phonertc.session.on('sendMessage', function (data) {
-        window.console.log('\n\n\n');
-        window.console.log('Message:');
-        window.console.log(data);
-        window.console.log('\n\n\n');
+      return new SIP.Uitls.Promise(function (resolve, reject) {
+        this.phonertc.session = new cordova.plugins.phonertc.Session(config);
+        this.phonertc.session.on('sendMessage', function (data) {
+          if(data.type === 'offer' ||
+             data.type === 'answer') {
+            resolve(data.sdp);
+          }
+          window.console.log('\n\n\n');
+          window.console.log('Message:');
+          window.console.log(data);
+          window.console.log('\n\n\n');
+        });
+        this.phonertc.session.call();
       });
-      this.phonertc.session.call();
   	}}
 	});
 
