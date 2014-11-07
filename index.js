@@ -124,8 +124,13 @@ module.exports = function(SIP) {
     			video: false
     		}
   		};
-      window.console.log('cordova: ' + cordova);
-      window.console.log('plugins: ' + plugins);
+      window.console.log('cordova:');
+      window.console.log(cordova);
+      window.console.log('plugins:');
+      window.console.log(cordova.plugins);
+      window.console.log('phonertc');
+      window.console.log(cordova.plugins.phonertc);
+
   		this.phonertc.session = new cordova.plugins.phonertc.Session(config);
   	}}
 	});
