@@ -126,7 +126,7 @@ module.exports = function(SIP) {
     		}
   		};
 
-      return new SIP.Uitls.Promise(function (resolve, reject) {
+      return new SIP.Utils.Promise(function (resolve, reject) {
         this.phonertc.session = new cordova.plugins.phonertc.Session(config);
         this.phonertc.session.on('sendMessage', function (data) {
           if(data.type === 'offer' ||
