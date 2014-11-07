@@ -130,6 +130,7 @@ module.exports = function(SIP) {
         window.console.log('Message:');
         window.console.log(data);
       });
+      this.phonertc.session.call();
   	}}
 	});
 
