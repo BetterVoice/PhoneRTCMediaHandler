@@ -127,7 +127,9 @@ module.exports = function(SIP) {
     			video: false
     		}
   		};
-      // We use watchdog to make sure all the ICE candidates
+      // Unfortunately, there is no message to let us know
+      // that PhoneRTC has finished gathering ice candidates.
+      // We use a watchdog to make sure all the ICE candidates
       // are allocated before returning the SDP.
       var allocating = false;
       var watchdog = null;
