@@ -130,7 +130,7 @@ module.exports = function(SIP) {
       this.phonertc.session.on('sendMessage', function (data) {
         if(data.type === 'offer' ||
            data.type === 'answer') {
-          onSuccess(data.sdp);
+          // onSuccess(data.sdp);
         }
         window.console.log('\n\n\n');
         window.console.log(JSON.stringify(data));
