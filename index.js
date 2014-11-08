@@ -126,17 +126,17 @@ module.exports = function(SIP) {
     		}
   		};
 
-      window.console.log(SIP.Utils.Q);
-      // return new SIP.Utils.Promise(function (resolve, reject) {
-      //   this.phonertc.session = new cordova.plugins.phonertc.Session(config);
-      //   this.phonertc.session.on('sendMessage', function (data) {
-      //     if(data.type === 'offer' ||
-      //        data.type === 'answer') {
-      //       resolve(data.sdp);
-      //     }
-      //   });
-      //   this.phonertc.session.call();
-      // });
+      window.console.log(globals.Promise);
+      return new SIP.Utils.Promise(function (resolve, reject) {
+        this.phonertc.session = new cordova.plugins.phonertc.Session(config);
+        this.phonertc.session.on('sendMessage', function (data) {
+          if(data.type === 'offer' ||
+             data.type === 'answer') {
+            resolve(data.sdp);
+          }
+        });
+        this.phonertc.session.call();
+      });
   	}}
 	});
 
