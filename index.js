@@ -75,13 +75,13 @@ module.exports = function(SIP) {
   		if(isInitiator) {
         this.startSession(isInitiator, onSuccess, onFailure);
       } else {
-        window.console.log('****************************** Here! ***************************');
         onSuccess(phonertc.sdp);
       }
   	}},
 
   	setDescription: {writable: true, value: function setDescription(sdp, onSuccess, onFailure) {
   		var phonertc = this.phonertc;
+      window.console.log('************************* Here!')
       var isNewCall = !phonertc.role || !phonertc.sdp;
   		if(isNewCall) {
         this.startSession(false, onSuccess, onFailure);
