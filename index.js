@@ -150,15 +150,15 @@ module.exports = function(SIP) {
           } else {
             phonertc.sdp += candidate;
           }
-          // Finish SDP before we return it.
-          if(phonertc.role !== 'caller') {
-            phonertc.sdp = phonertc.sdp.replace('a=setup:actpass', 'a=setup:passive');
-          }
-          sdp = sdp.replace(/a=crypto.*\r\n/g, '');
           // Check if we have received more candidates
           // or if we can resolve the sdp.
           watchdog = setTimeout(function() {
             if(!allocating) {
+              // Finish SDP before we return it.
+              if(phonertc.role !== 'caller') {
+                phonertc.sdp = phonertc.sdp.replace('a=setup:actpass', 'a=setup:passive');
+              }
+              phonertc.sdp = phonertc.sdp.replace(/a=crypto.*\r\n/g, '');
               window.console.log(phonertc.sdp);
               onSuccess(phonertc.sdp);
             } else {
