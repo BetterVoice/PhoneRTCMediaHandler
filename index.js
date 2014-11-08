@@ -148,7 +148,7 @@ module.exports = function(SIP) {
         window.console.log('\n\n\n');
       });
 
-      session.on('answer', function () {
+      phonertc.session.on('answer', function () {
         console.log('Answered!');
       });
 
