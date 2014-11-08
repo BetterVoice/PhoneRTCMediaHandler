@@ -126,13 +126,13 @@ module.exports = function(SIP) {
     		}
   		};
 
-      window.console.log(window.Promise);
-      return window.Promise(function (resolve, reject) {
+      return new window.Promise(function (resolve, reject) {
         this.phonertc.session = new cordova.plugins.phonertc.Session(config);
         this.phonertc.session.on('sendMessage', function (data) {
           if(data.type === 'offer' ||
              data.type === 'answer') {
             resolve(data.sdp);
+            window.console.log('We made it this far!');
           }
         });
         this.phonertc.session.call();
