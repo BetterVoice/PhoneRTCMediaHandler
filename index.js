@@ -69,17 +69,16 @@ module.exports = function(SIP) {
   		}
   	}},
 
-  	getDescription: {writable: true, value: function getDescription(mediaHint) {
+  	getDescription: {writable: true, value: function getDescription(onSuccess, onFailure, mediaHint) {
   		var role = this.phonertc.role;
-  		if(!role) { 
-        return this.startSession(true);
-      }
-      window.console.log('End of: getDescription(mediaHint)');
+      var isInitiator = true;
+  		if(!role) { this.startSession(isInitiator, onSuccess, onFailure); }
   	}},
 
-  	setDescription: {writable: true, value: function setDescription(sdp) {
+  	setDescription: {writable: true, value: function setDescription(sdp, onSuccess, onFailure) {
   		var role = this.phonertc.role;
-  		if(!role) { this.startSession(false); }
+      var isInitiator = false;
+  		if(!role) { this.startSession(isInitiator, onSuccess, onFailure); }
   		var session = this.phonertc.session;
   		if(role === 'caller') {
   			session.receiveMessage({'type': 'answer', 'sdp': sdp});
@@ -117,7 +116,7 @@ module.exports = function(SIP) {
   	}},
 
   	// Local Methods.
-  	startSession: {writable: true, value: function startSession(isInitiator) {
+  	startSession: {writable: true, value: function startSession(isInitiator, onSuccess, onFailure) {
   		this.phonertc.role = isInitiator ? 'caller' : 'callee';
   		var config = {
   			isInitiator: isInitiator,
@@ -127,18 +126,15 @@ module.exports = function(SIP) {
     			video: false
     		}
   		};
-
-      return new window.Promise(function (resolve, reject) {
-        this.phonertc.session = new cordova.plugins.phonertc.Session(config);
-        this.phonertc.session.on('sendMessage', function (data) {
-          if(data.type === 'offer' ||
-             data.type === 'answer') {
-            resolve(data.sdp);
-            window.console.log('We made it this far!');
-          }
-        });
-        this.phonertc.session.call();
+      this.phonertc.session = new cordova.plugins.phonertc.Session(config);
+      this.phonertc.session.on('sendMessage', function (data) {
+        if(data.type === 'offer' ||
+           data.type === 'answer') {
+          onSuccess(data.sdp);
+          window.console.log('We made it this far!');
+        }
       });
+      this.phonertc.session.call();
   	}}
 	});
 
