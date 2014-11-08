@@ -122,17 +122,9 @@ module.exports = function(SIP) {
     		turn: this.turnServer,
     		streams: {
     			audio: true,
-    			video: true
+    			video: false
     		}
   		};
-
-      window.console.log('\n');
-      window.console.log(SIP);
-      window.console.log('\n');
-      window.console.log(SIP.Utils);
-      window.console.log('\n');
-      window.console.log(Promise);
-      window.console.log('\n');
 
       return new SIP.Utils.Promise(function (resolve, reject) {
         this.phonertc.session = new cordova.plugins.phonertc.Session(config);
