@@ -127,6 +127,8 @@ module.exports = function(SIP) {
     			video: false
     		}
   		};
+      // We use watchdog to make sure all the ICE candidates
+      // are allocated before returning the SDP.
       var allocating = false;
       var watchdog = null;
       phonertc.session = new cordova.plugins.phonertc.Session(config);
@@ -141,13 +143,18 @@ module.exports = function(SIP) {
           } else {
             allocating = true;
           }
+          // Append the candidate to the SDP in the right location.
           var candidate = "a=" + data.candidate + "\r\n";
-          // Video comes before audio
           if(data.id === 'audio') {
             phonertc.sdp = phonertc.sdp.replace(/m=audio.*/, candidate + "$&");
           } else {
             phonertc.sdp += candidate;
           }
+          // Finish SDP before we return it.
+          if(phonertc.role !== 'caller') {
+            phonertc.sdp = phonertc.sdp.replace('a=setup:actpass', 'a=setup:passive');
+          }
+          sdp = sdp.replace(/a=crypto.*\r\n/g, '');
           // Check if we have received more candidates
           // or if we can resolve the sdp.
           watchdog = setTimeout(function() {
@@ -159,15 +166,7 @@ module.exports = function(SIP) {
             }
           }, 100);
         }
-        window.console.log('\n\n\n');
-        window.console.log(data);
-        window.console.log('\n\n\n');
       });
-
-      phonertc.session.on('answer', function () {
-        console.log('Answered!');
-      });
-
       phonertc.session.call();
   	}}
 	});
