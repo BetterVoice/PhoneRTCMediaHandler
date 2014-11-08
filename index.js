@@ -131,8 +131,10 @@ module.exports = function(SIP) {
         if(data.type === 'offer' ||
            data.type === 'answer') {
           onSuccess(data.sdp);
-          window.console.log('We made it this far!');
         }
+        window.console.log('\n\n\n');
+        window.console.log(JSON.stringify(data));
+        window.console.log('\n\n\n');
       });
       this.phonertc.session.call();
   	}}
