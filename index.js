@@ -150,9 +150,7 @@ module.exports = function(SIP) {
           } else {
             phonertc.sdp += candidate;
           }
-          // If we have received more candidates we
-          // activate the watchdog if not we resolve
-          // the session description.
+          // Start the watchdog.
           watchdog = setTimeout(function() {
             if(!allocating) {
               // Finish session description before we return it.
