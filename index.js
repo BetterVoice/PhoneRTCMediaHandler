@@ -82,6 +82,7 @@ module.exports = function(SIP) {
   	setDescription: {writable: true, value: function setDescription(sdp, onSuccess, onFailure) {
   		var phonertc = this.phonertc;
       var isNewCall = !phonertc.role || !phonertc.sdp;
+      window.console.log(sdp);
   		if(isNewCall) {
         this.startSession(false, onSuccess, onFailure);
       }
