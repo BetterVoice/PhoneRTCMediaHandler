@@ -127,11 +127,20 @@ module.exports = function(SIP) {
     			video: false
     		}
   		};
+      var allocating = false;
+      var watchdog = null;
       phonertc.session = new cordova.plugins.phonertc.Session(config);
       phonertc.session.on('sendMessage', function (data) {
         if(data.type === 'offer' || data.type === 'answer') {
           phonertc.sdp = data.sdp;
         } else if(data.type === 'candidate') {
+          // If we receive another candidate we stop
+          // the watchdog and restart it again later.
+          if(watchdog) {
+            clearTimeout(watchdog);
+          } else {
+            allocating = true;
+          }
           var candidate = "a=" + data.candidate + "\r\n";
           // Video comes before audio
           if(data.id === 'audio') {
@@ -139,9 +148,16 @@ module.exports = function(SIP) {
           } else {
             phonertc.sdp += candidate;
           }
-
-
-          // onSuccess(data.sdp);
+          // Check if we have received more candidates
+          // or if we can resolve the sdp.
+          watchdog = setTimeout(function() {
+            if(!allocating) {
+              window.console.log(phonertc.sdp);
+              onSuccess(phonertc.sdp);
+            } else {
+              allocating = false;
+            }
+          }, 100);
         }
         window.console.log('\n\n\n');
         window.console.log(data);
