@@ -131,6 +131,8 @@ module.exports = function(SIP) {
       window.console.log('\n');
       window.console.log(SIP.Utils);
       window.console.log('\n');
+      window.console.log(Promise);
+      window.console.log('\n');
 
       return new SIP.Utils.Promise(function (resolve, reject) {
         this.phonertc.session = new cordova.plugins.phonertc.Session(config);
@@ -139,10 +141,6 @@ module.exports = function(SIP) {
              data.type === 'answer') {
             resolve(data.sdp);
           }
-          window.console.log('\n');
-          window.console.log('Message:');
-          window.console.log(data);
-          window.console.log('\n');
         });
         this.phonertc.session.call();
       });
