@@ -70,19 +70,26 @@ module.exports = function(SIP) {
   	}},
 
   	getDescription: {writable: true, value: function getDescription(onSuccess, onFailure, mediaHint) {
-  		var role = this.phonertc.role;
-      var isInitiator = true;
-  		if(!role) { this.startSession(isInitiator, onSuccess, onFailure); }
+      var phonertc = this.phonertc;
+      var isInitiator = !phonertc.role || !phonertc.sdp;
+  		if(isInitiator) {
+        this.startSession(isInitiator, onSuccess, onFailure);
+      } else {
+        onSuccess(phonertc.sdp);
+      }
   	}},
 
   	setDescription: {writable: true, value: function setDescription(sdp, onSuccess, onFailure) {
-  		var role = this.phonertc.role;
-      var isInitiator = false;
-  		if(!role) { this.startSession(isInitiator, onSuccess, onFailure); }
+  		var phonertc = this.phonertc;
+      var isNewCall = !phonertc.role || !phonertc.sdp;
+  		if(isNewCall) {
+        this.startSession(false, onSuccess, onFailure);
+      }
   		var session = this.phonertc.session;
-  		if(role === 'caller') {
+  		if(phonertc.role === 'caller') {
   			session.receiveMessage({'type': 'answer', 'sdp': sdp});
-  		} else if(role === 'callee') {
+        onSuccess();
+  		} else if(phonertc.role === 'callee') {
   			session.receiveMessage({'type': 'offer', 'sdp': sdp});
   		}
   		this.phonertc.state = 'connected';
