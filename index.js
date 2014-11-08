@@ -117,7 +117,8 @@ module.exports = function(SIP) {
 
   	// Local Methods.
   	startSession: {writable: true, value: function startSession(isInitiator, onSuccess, onFailure) {
-  		this.phonertc.role = isInitiator ? 'caller' : 'callee';
+      var phonertc = this.phonertc;
+  		phonertc.role = isInitiator ? 'caller' : 'callee';
   		var config = {
   			isInitiator: isInitiator,
     		turn: this.turnServer,
@@ -126,17 +127,32 @@ module.exports = function(SIP) {
     			video: false
     		}
   		};
-      this.phonertc.session = new cordova.plugins.phonertc.Session(config);
-      this.phonertc.session.on('sendMessage', function (data) {
-        if(data.type === 'offer' ||
-           data.type === 'answer') {
+      phonertc.session = new cordova.plugins.phonertc.Session(config);
+      phonertc.session.on('sendMessage', function (data) {
+        if(data.type === 'offer' || data.type === 'answer') {
+          phonertc.sdp = data.sdp;
+        } else if(data.type === 'candidate') {
+          var candidate = "a=" + data.candidate + "\r\n";
+          // Video comes before audio
+          if(data.id === 'audio') {
+            phonertc.sdp = phonertc.sdp.replace(/m=audio.*/, candidate + "$&");
+          } else {
+            phonertc.sdp += candidate;
+          }
+
+
           // onSuccess(data.sdp);
         }
         window.console.log('\n\n\n');
         window.console.log(data);
         window.console.log('\n\n\n');
       });
-      this.phonertc.session.call();
+
+      session.on('answer', function () {
+        console.log('Answered!');
+      });
+
+      phonertc.session.call();
   	}}
 	});
 
