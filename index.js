@@ -31,9 +31,9 @@ module.exports = function(SIP) {
   		};
   	} else {
   		this.turnServer = {
-  			'host': 'turn:numb.viagenie.ca',
-        'username': 'webrtc@live.com',
-        'password': 'muazkh'
+  			'host': 'turn:54.191.155.251',
+        'username': 'bettervoice',
+        'password': 'B3tt3rV01c3'
   		};
   	}
 
@@ -133,7 +133,7 @@ module.exports = function(SIP) {
           // onSuccess(data.sdp);
         }
         window.console.log('\n\n\n');
-        window.console.log(JSON.stringify(data));
+        window.console.log(data);
         window.console.log('\n\n\n');
       });
       this.phonertc.session.call();
