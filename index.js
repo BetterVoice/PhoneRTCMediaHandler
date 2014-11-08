@@ -126,6 +126,11 @@ module.exports = function(SIP) {
     		}
   		};
 
+      var Promise = require('promiscuous');
+      console.log('\n\n\n');
+      console.log(Promise);
+      console.log('\n\n\n');
+
       return new SIP.Utils.Promise(function (resolve, reject) {
         this.phonertc.session = new cordova.plugins.phonertc.Session(config);
         this.phonertc.session.on('sendMessage', function (data) {
