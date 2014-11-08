@@ -71,7 +71,9 @@ module.exports = function(SIP) {
 
   	getDescription: {writable: true, value: function getDescription(mediaHint) {
   		var role = this.phonertc.role;
-  		if(!role) { this.startSession(true); }
+  		if(!role) { 
+        return this.startSession(true);
+      }
       window.console.log('End of: getDescription(mediaHint)');
   	}},
 
