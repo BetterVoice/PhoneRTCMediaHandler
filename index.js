@@ -122,6 +122,14 @@ module.exports = function(SIP) {
   		}
   	}},
 
+    hold: {writable: true, value: function hold () {
+      this.mute();
+    }},
+
+    unhold: {writable: true, value: function unhold () {
+      this.unmute();
+    }},
+
   	// Local Methods.
   	startSession: {writable: true, value: function startSession(isInitiator, onSuccess, onFailure) {
       var phonertc = this.phonertc;
