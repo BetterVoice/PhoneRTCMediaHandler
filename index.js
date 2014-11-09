@@ -138,7 +138,7 @@ module.exports = function(SIP) {
       var phonertc = this.phonertc;
   		phonertc.role = isInitiator ? 'caller' : 'callee';
   		var config = {
-        sessionId: '0',
+        sessionKey: '0',
   			isInitiator: isInitiator,
     		turn: this.turnServer,
     		streams: {
