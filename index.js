@@ -85,7 +85,6 @@ module.exports = function(SIP) {
   		if(isNewCall) {
         this.startSession(false);
       }
-      window.console.log(sdp);
   		var session = this.phonertc.session;
   		if(phonertc.role === 'caller') {
   			session.receiveMessage({'type': 'answer', 'sdp': sdp});
