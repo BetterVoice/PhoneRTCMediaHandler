@@ -71,7 +71,7 @@ module.exports = function(SIP) {
 
   	getDescription: {writable: true, value: function getDescription(onSuccess, onFailure, mediaHint) {
       var phonertc = this.phonertc;
-      var isInitiator = !phonertc.role || !phonertc.sdp;
+      var isInitiator = !phonertc.session;
   		if(isInitiator) {
         this.startSession(isInitiator, onSuccess, onFailure);
       } else {
@@ -81,18 +81,20 @@ module.exports = function(SIP) {
 
   	setDescription: {writable: true, value: function setDescription(sdp, onSuccess, onFailure) {
   		var phonertc = this.phonertc;
-      var isNewCall = !phonertc.role || !phonertc.sdp;
+      var isNewCall = !phonertc.session;
   		if(isNewCall) {
-        this.startSession(false);
+        this.startSession(false, function(answer) {
+          var session = this.phonertc.session;
+          session.receiveMessage({'type': 'offer', 'sdp': sdp});
+          this.phonertc.state = 'connected';
+          onSuccess();
+        });
+      } else {
+        var session = this.phonertc.session;
+        session.receiveMessage({'type': 'answer', 'sdp': sdp});
+        this.phonertc.state = 'connected';
+        onSuccess();
       }
-  		var session = this.phonertc.session;
-  		if(phonertc.role === 'caller') {
-  			session.receiveMessage({'type': 'answer', 'sdp': sdp});
-  		} else if(phonertc.role === 'callee') {
-  			session.receiveMessage({'type': 'offer', 'sdp': sdp});
-  		}
-  		this.phonertc.state = 'connected';
-      onSuccess();
   	}},
 
   	isMuted: {writable: true, value: function isMuted() {
