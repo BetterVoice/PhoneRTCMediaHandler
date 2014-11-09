@@ -92,7 +92,9 @@ module.exports = function(SIP) {
   		if(phonertc.role === 'caller') {
   			session.receiveMessage({'type': 'answer', 'sdp': sdp});
   		} else if(phonertc.role === 'callee') {
+        window.console.log('Message #1');
   			session.receiveMessage({'type': 'offer', 'sdp': sdp});
+        window.console.log('Message #2');
         session.call();
   		}
   		this.phonertc.state = 'connected';
