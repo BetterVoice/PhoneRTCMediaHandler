@@ -83,16 +83,16 @@ module.exports = function(SIP) {
   		var phonertc = this.phonertc;
       var isNewCall = !phonertc.role || !phonertc.sdp;
   		if(isNewCall) {
-        this.startSession(false, onSuccess, onFailure);
+        this.startSession(false);
       }
   		var session = this.phonertc.session;
   		if(phonertc.role === 'caller') {
   			session.receiveMessage({'type': 'answer', 'sdp': sdp});
-        onSuccess();
   		} else if(phonertc.role === 'callee') {
   			session.receiveMessage({'type': 'offer', 'sdp': sdp});
   		}
   		this.phonertc.state = 'connected';
+      onSuccess();
   	}},
 
   	isMuted: {writable: true, value: function isMuted() {
@@ -167,8 +167,9 @@ module.exports = function(SIP) {
                 phonertc.sdp = phonertc.sdp.replace('a=setup:actpass', 'a=setup:passive');
               }
               phonertc.sdp = phonertc.sdp.replace(/a=crypto.*\r\n/g, '');
-              // Resolve the session description.
-              onSuccess(phonertc.sdp);
+              // If an on success callback has been provided
+              // lets go ahead and give it the final sdp.
+              if(onSuccess) { onSuccess(phonertc.sdp); }
             } else {
               allocating = false;
             }
