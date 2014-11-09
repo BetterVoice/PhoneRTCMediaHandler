@@ -77,7 +77,7 @@ module.exports = function(SIP) {
         var session = this.phonertc.session;
         session.call();
       } else {
-        window.console.log(phonertc.sdp);
+        window.console.log('SDP: ' + phonertc.sdp);
         onSuccess(phonertc.sdp);
       }
   	}},
