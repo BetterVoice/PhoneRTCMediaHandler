@@ -62,7 +62,7 @@ module.exports = function(SIP) {
   		var state = this.phonertc.state;
   		if(state !== 'disconnected') {
   			var session = this.phonertc.session;
-  			session.close();
+  			session.close({'sessionKey': '0'});
   			session = null;
   			// Update our state.
   			this.phonertc.state = 'disconnected';
@@ -75,7 +75,7 @@ module.exports = function(SIP) {
   		if(isInitiator) {
         this.startSession(isInitiator, onSuccess, onFailure);
         var session = this.phonertc.session;
-        session.call();
+        session.call({'sessionKey': '0'});
       } else {
         onSuccess(phonertc.sdp);
       }
@@ -89,9 +89,9 @@ module.exports = function(SIP) {
       }
   		var session = this.phonertc.session;
   		if(phonertc.role === 'caller') {
-  			session.receiveMessage({'type': 'answer', 'sdp': sdp});
+  			session.receiveMessage({'sessionKey': '0', 'type': 'answer', 'sdp': sdp});
   		} else if(phonertc.role === 'callee') {
-  			session.receiveMessage({'type': 'offer', 'sdp': sdp});
+  			session.receiveMessage({'sessionKey': '0', 'type': 'offer', 'sdp': sdp});
         session.call();
   		}
   		this.phonertc.state = 'connected';
@@ -110,7 +110,7 @@ module.exports = function(SIP) {
   		if(state === 'connected') {
   			var session = this.phonertc.session;
   			session.streams.audio = false;
-				session.renegotiate();
+				session.renegotiate({'sessionKey': '0'});
   			this.phonertc.state = 'muted';
   		}
   	}},
@@ -120,7 +120,7 @@ module.exports = function(SIP) {
   		if(state === 'muted') {
   			var session = this.phonertc.session;
   			session.streams.audio = true;
-				session.renegotiate();
+				session.renegotiate({'sessionKey': '0'});
   			this.phonertc.state = 'connected';
   		}
   	}},
