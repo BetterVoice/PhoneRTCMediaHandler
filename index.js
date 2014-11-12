@@ -61,9 +61,8 @@ module.exports = function(SIP) {
   	close: {writable: true, value: function close() {
   		var state = this.phonertc.state;
   		if(state !== 'disconnected') {
-  			var session = this.phonertc.session;
-  			session.close({'sessionKey': '0'});
-  			session = null;
+  			this.phonertc.session.close({'sessionKey': '0'});
+  			this.phonertc.session = null;
   			// Update our state.
   			this.phonertc.state = 'disconnected';
   		}
@@ -74,8 +73,6 @@ module.exports = function(SIP) {
       var isInitiator = !phonertc.session;
   		if(isInitiator) {
         this.startSession(isInitiator, onSuccess, onFailure);
-        var session = this.phonertc.session;
-        session.call({'sessionKey': '0'});
       } else {
         onSuccess(phonertc.sdp);
       }
@@ -92,7 +89,6 @@ module.exports = function(SIP) {
   			session.receiveMessage({'sessionKey': '0', 'type': 'answer', 'sdp': sdp});
   		} else if(phonertc.role === 'callee') {
   			session.receiveMessage({'sessionKey': '0', 'type': 'offer', 'sdp': sdp});
-        session.call();
   		}
   		this.phonertc.state = 'connected';
       onSuccess();
@@ -187,6 +183,7 @@ module.exports = function(SIP) {
             }
           }, 100);
         }
+        phonertc.session.call({'sessionKey': '0'});
       });
   	}}
 	});
