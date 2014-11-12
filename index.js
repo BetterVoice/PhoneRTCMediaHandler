@@ -183,7 +183,7 @@ module.exports = function(SIP) {
             }
           }, 100);
         }
-        phonertc.session.call({'sessionKey': '0'});
+        phonertc.session.call({sessionKey: '0'});
       });
   	}}
 	});
