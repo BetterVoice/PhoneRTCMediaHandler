@@ -73,6 +73,7 @@ module.exports = function(SIP) {
       var isInitiator = !phonertc.session;
   		if(isInitiator) {
         this.startSession(isInitiator, onSuccess, onFailure);
+        phonertc.session.call();
       } else {
         onSuccess(phonertc.sdp);
       }
@@ -89,6 +90,7 @@ module.exports = function(SIP) {
   			session.receiveMessage({'type': 'answer', 'sdp': sdp});
   		} else if(phonertc.role === 'callee') {
   			session.receiveMessage({'type': 'offer', 'sdp': sdp});
+        session.call();
   		}
   		this.phonertc.state = 'connected';
       onSuccess();
@@ -181,7 +183,6 @@ module.exports = function(SIP) {
           }, 100);
         }
       });
-      phonertc.session.call();
   	}}
 	});
 
