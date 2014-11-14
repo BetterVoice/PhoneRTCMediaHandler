@@ -166,7 +166,7 @@ module.exports = function(SIP) {
           // Append the candidate to the SDP in the right location.
           var candidate = "a=" + data.candidate + "\r\n";
           if(data.id === 'audio') {
-            phonertc.sdp = phonertc.sdp.replace(/m=audio.*/, candidate + "$&");
+            phonertc.sdp = phonertc.sdp.replace(/m=audio.*/, "$&" + candidate);
           } else {
             phonertc.sdp += candidate;
           }
