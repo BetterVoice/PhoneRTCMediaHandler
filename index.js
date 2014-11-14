@@ -177,7 +177,7 @@ module.exports = function(SIP) {
               phonertc.sdp = phonertc.sdp.replace(/a=crypto.*\r\n/g, '');
               // If an on success callback has been provided
               // lets go ahead and give it the final sdp.
-              if(onSuccess) { onSuccess(phonertc.sdp); window.console.log(phonertc.sdp) }
+              if(onSuccess) { onSuccess(phonertc.sdp); }
             } else {
               allocating = false;
             }
