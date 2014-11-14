@@ -154,6 +154,7 @@ module.exports = function(SIP) {
       phonertc.session.on('sendMessage', function (data) {
         if(data.type === 'offer' || data.type === 'answer') {
           phonertc.sdp = data.sdp;
+          window.console.log(phonertc.sdp)
         } else if(data.type === 'candidate') {
           // If we receive another candidate we stop
           // the watchdog and restart it again later.
@@ -179,7 +180,7 @@ module.exports = function(SIP) {
               phonertc.sdp = phonertc.sdp.replace(/a=crypto.*\r\n/g, '');
               // If an on success callback has been provided
               // lets go ahead and give it the final sdp.
-              if(onSuccess) { onSuccess(phonertc.sdp); }
+              if(onSuccess) { onSuccess(phonertc.sdp); window.console.log(phonertc.sdp) }
             } else {
               allocating = false;
             }
