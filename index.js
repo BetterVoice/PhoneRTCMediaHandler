@@ -162,11 +162,9 @@ module.exports = function(SIP) {
           } else {
             allocating = true;
           }
-          // Append the candidate to the SDP in the right location.
+          // Append the candidate to the SDP.
           var candidate = "a=" + data.candidate + "\r\n";
           if(data.id === 'audio') {
-            phonertc.sdp = phonertc.sdp.replace(/m=audio.*/, "$&" + candidate);
-          } else {
             phonertc.sdp += candidate;
           }
           // Start the watchdog.
