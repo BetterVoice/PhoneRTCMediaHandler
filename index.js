@@ -181,7 +181,7 @@ module.exports = function(SIP) {
           }, 100);
         }
       });
-      session.call();
+      phonertc.session.call();
   	}}
 	});
 
