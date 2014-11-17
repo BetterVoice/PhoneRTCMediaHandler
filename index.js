@@ -71,10 +71,13 @@ module.exports = function(SIP) {
   	getDescription: {writable: true, value: function getDescription(onSuccess, onFailure, mediaHint) {
       var phonertc = this.phonertc;
       var isInitiator = !phonertc.session;
+      window.console.log("Made it this far!");
+      window.console.log("Is Initiator: " + isInitiator);
   		if(isInitiator) {
         this.startSession(isInitiator, onSuccess, onFailure);
         phonertc.session.call();
       } else {
+        window.console.log(phonertc.sdp);
         onSuccess(phonertc.sdp);
       }
   	}},
