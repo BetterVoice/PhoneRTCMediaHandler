@@ -148,7 +148,7 @@ module.exports = function(SIP) {
       phonertc.session.on('sendMessage', function (data) {
         if(data.type === 'offer' || data.type === 'answer') {
           phonertc.sdp = data.sdp;
-          if(data.type === 'offer') {
+          if(data.type === 'answer') {
             if(onSuccess) { onSuccess(); }
           }
         } else if(data.type === 'candidate') {
