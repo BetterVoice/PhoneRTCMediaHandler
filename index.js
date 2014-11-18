@@ -72,8 +72,7 @@ module.exports = function(SIP) {
       var phonertc = this.phonertc;
       var isInitiator = !phonertc.session;
   		if(isInitiator) {
-        this.startSession(isInitiator, onSuccess, onFailure);
-        phonertc.session.call();
+        this.startSession(null, onSuccess, onFailure);
       } else {
         onSuccess(phonertc.sdp);
       }
@@ -81,20 +80,15 @@ module.exports = function(SIP) {
 
   	setDescription: {writable: true, value: function setDescription(sdp, onSuccess, onFailure) {
   		var phonertc = this.phonertc;
-      var isInitiator = !phonertc.session;
-  		if(isInitiator) {
-        this.startSession(false);
+      var isNewCall = !phonertc.session;
+  		if(isNewCall) {
+        this.startSession(sdp, onSuccess, onFailure);
       }
   		var session = this.phonertc.session;
   		if(phonertc.role === 'caller') {
   			session.receiveMessage({'type': 'answer', 'sdp': sdp});
-  		} else if(phonertc.role === 'callee') {
-  			session.receiveMessage({'type': 'offer', 'sdp': sdp});
-        session.call();
   		}
   		this.phonertc.state = 'connected';
-      onSuccess();
-      window.console.log("Made it this far!");
   	}},
 
   	isMuted: {writable: true, value: function isMuted() {
@@ -133,11 +127,11 @@ module.exports = function(SIP) {
     }},
 
   	// Local Methods.
-  	startSession: {writable: true, value: function startSession(isInitiator, onSuccess, onFailure) {
+  	startSession: {writable: true, value: function startSession(sdp, onSuccess, onFailure) {
       var phonertc = this.phonertc;
-  		phonertc.role = isInitiator ? 'caller' : 'callee';
+  		phonertc.role = sdp === null ? 'caller' : 'callee';
   		var config = {
-  			isInitiator: isInitiator,
+  			isInitiator: phonertc.role === 'caller',
     		turn: this.turnServer,
     		streams: {
     			audio: true,
@@ -154,6 +148,9 @@ module.exports = function(SIP) {
       phonertc.session.on('sendMessage', function (data) {
         if(data.type === 'offer' || data.type === 'answer') {
           phonertc.sdp = data.sdp;
+          if(data.type === 'offer') {
+            if(onSuccess) { onSuccess(); }
+          }
         } else if(data.type === 'candidate') {
           // If we receive another candidate we stop
           // the watchdog and restart it again later.
@@ -184,6 +181,13 @@ module.exports = function(SIP) {
           }, 100);
         }
       });
+      // If we received a session description pass it on to the
+      // PhoneRTC plugin.
+      if(phonertc.role === 'callee') {
+        phonertc.session.receiveMessage({'type': 'offer', 'sdp': sdp});
+      }
+      // Start the media.
+      phonertc.call();
   	}}
 	});
 
