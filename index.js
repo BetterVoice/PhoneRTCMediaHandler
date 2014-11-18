@@ -187,7 +187,7 @@ module.exports = function(SIP) {
         phonertc.session.receiveMessage({'type': 'offer', 'sdp': sdp});
       }
       // Start the media.
-      phonertc.call();
+      phonertc.session.call();
   	}}
 	});
 
