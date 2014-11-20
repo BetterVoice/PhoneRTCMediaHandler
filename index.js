@@ -142,7 +142,6 @@ module.exports = function(SIP) {
       // that PhoneRTC has finished gathering ice candidates.
       // We use a watchdog to make sure all the ICE candidates
       // are allocated before returning the SDP.
-      var allocating = false;
       var watchdog = null;
       phonertc.session = new cordova.plugins.phonertc.Session(config);
       phonertc.session.on('sendMessage', function (data) {
@@ -156,8 +155,6 @@ module.exports = function(SIP) {
           // the watchdog and restart it again later.
           if(watchdog) {
             clearTimeout(watchdog);
-          } else {
-            allocating = true;
           }
           // Append the candidate to the SDP.
           var candidate = "a=" + data.candidate + "\r\n";
@@ -166,18 +163,14 @@ module.exports = function(SIP) {
           }
           // Start the watchdog.
           watchdog = setTimeout(function() {
-            if(!allocating) {
-              // Finish session description before we return it.
-              if(phonertc.role !== 'caller') {
-                phonertc.sdp = phonertc.sdp.replace('a=setup:actpass', 'a=setup:passive');
-              }
-              phonertc.sdp = phonertc.sdp.replace(/a=crypto.*\r\n/g, '');
-              // If an on success callback has been provided
-              // lets go ahead and give it the final sdp.
-              if(onSuccess) { onSuccess(phonertc.sdp); }
-            } else {
-              allocating = false;
+            // Finish session description before we return it.
+            if(phonertc.role !== 'caller') {
+              phonertc.sdp = phonertc.sdp.replace('a=setup:actpass', 'a=setup:passive');
             }
+            phonertc.sdp = phonertc.sdp.replace(/a=crypto.*\r\n/g, '');
+            // If an on success callback has been provided
+            // lets go ahead and give it the final sdp.
+            if(onSuccess) { onSuccess(phonertc.sdp); }
           }, 100);
         }
       });
