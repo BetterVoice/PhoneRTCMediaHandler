@@ -151,18 +151,13 @@ module.exports = function(SIP) {
             if(onSuccess) { onSuccess(); }
           }
         } else if(data.type === 'candidate') {
-          // If we receive another candidate we stop
-          // the watchdog and restart it again later.
-          if(watchdog) {
-            clearTimeout(watchdog);
-          }
           // Append the candidate to the SDP.
           var candidate = "a=" + data.candidate + "\r\n";
           if(data.id === 'audio') {
             phonertc.sdp += candidate;
           }
-          // Start the watchdog.
-          watchdog = setTimeout(function() {
+        } else if(data.type === 'event') {
+          if(data.description === 'ice-gathering-complete') {
             // Finish session description before we return it.
             if(phonertc.role !== 'caller') {
               phonertc.sdp = phonertc.sdp.replace('a=setup:actpass', 'a=setup:passive');
@@ -171,7 +166,7 @@ module.exports = function(SIP) {
             // If an on success callback has been provided
             // lets go ahead and give it the final sdp.
             if(onSuccess) { onSuccess(phonertc.sdp); }
-          }, 100);
+          }
         }
       });
       // If we received a session description pass it on to the
