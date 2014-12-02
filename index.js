@@ -149,14 +149,13 @@ module.exports = function(SIP) {
       var phonertc = this.phonertc;
   		phonertc.role = sdp === null ? 'caller' : 'callee';
       phonertc.session.on('sendMessage', function (data) {
-        if(data.type === 'offer' || data.type === 'answer') {
-          phonertc.sdp = data.sdp;
-          if(data.type === 'answer') { 
-            if(onSuccess) { onSuccess(); }
-          } else if(data.type === 'offer') {
-            if(onSuccess) { onSuccess(data.sdp + phonertc.candidates)}
-            window.console.log('Offer: ' + data.sdp + phonertc.candidates);
-          }
+        phonertc.sdp = data.sdp;
+        if(data.type === 'answer') { 
+          if(onSuccess) { onSuccess(); }
+          window.console.log('Answer: ' + data.sdp);
+        } else if(data.type === 'offer') {
+          if(onSuccess) { onSuccess(data.sdp + phonertc.candidates)}
+          window.console.log('Offer: ' + data.sdp + phonertc.candidates);
         }
       });
       // If we received a session description pass it on to the
