@@ -171,7 +171,7 @@ module.exports = function(SIP) {
             // If an on success callback has been provided
             // lets go ahead and give it the final sdp.
             if(onSuccess) { onSuccess(phonertc.sdp); }
-          }, 100);
+          }, 500);
         }
       });
       // If we received a session description pass it on to the
