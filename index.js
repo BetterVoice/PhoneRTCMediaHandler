@@ -39,9 +39,12 @@ module.exports = function(SIP) {
 
   	// Finish initialization.
   	this.phonertc = {
-  		'candidates': '',
-      'role': '',
-      'sdp': '',
+  		/*
+  		 * Possible states are:
+  		 * - disconnected
+  		 * - connected
+  		 * - muted
+       */
       'session': new cordova.plugins.phonertc.Session({
         turn: this.turnServer,
         streams: {
@@ -49,21 +52,8 @@ module.exports = function(SIP) {
           video: false
         }
       }),
-      /*
-       * Possible states are:
-       * - disconnected
-       * - connected
-       * - muted
-       */
   		'state': 'disconnected'
   	};
-    // Start gathering ICE candidates for merger.
-    this.phonertc.session.on('candidate', function (data) {
-      var candidate = "a=" + data.candidate + "\r\n";
-      if(data.id === 'audio') {
-        this.phonertc.candidates += candidate;
-      }
-    });
     this.phonertc.session.init();
 	}
 
@@ -88,7 +78,7 @@ module.exports = function(SIP) {
 
   	getDescription: {writable: true, value: function getDescription(onSuccess, onFailure, mediaHint) {
       var phonertc = this.phonertc;
-      var isInitiator = phonertc.role.length === 0;
+      var isInitiator = !phonertc.session;
   		if(isInitiator) {
         this.startSession(null, onSuccess, onFailure);
       } else {
@@ -98,7 +88,7 @@ module.exports = function(SIP) {
 
   	setDescription: {writable: true, value: function setDescription(sdp, onSuccess, onFailure) {
   		var phonertc = this.phonertc;
-      var isNewCall = phonertc.role.length === 0;
+      var isNewCall = !phonertc.session;
   		if(isNewCall) {
         this.startSession(sdp, onSuccess, onFailure);
       }
@@ -151,10 +141,25 @@ module.exports = function(SIP) {
       phonertc.session.on('sendMessage', function (data) {
         if(data.type === 'offer' || data.type === 'answer') {
           phonertc.sdp = data.sdp;
-          if(data.type === 'answer') { 
+          if(data.type === 'answer') {
             if(onSuccess) { onSuccess(); }
-          } else if(data.type === 'offer') {
-            if(onSuccess) { onSuccess(data.sdp + phonertc.candidates)}
+          }
+        } else if(data.type === 'candidate') {
+          // Append the candidate to the SDP.
+          var candidate = "a=" + data.candidate + "\r\n";
+          if(data.id === 'audio') {
+            phonertc.sdp += candidate;
+          }
+        } else if(data.type === 'event') {
+          if(data.description === 'ice-gathering-complete') {
+            // Finish session description before we return it.
+            if(phonertc.role !== 'caller') {
+              phonertc.sdp = phonertc.sdp.replace('a=setup:actpass', 'a=setup:passive');
+            }
+            phonertc.sdp = phonertc.sdp.replace(/a=crypto.*\r\n/g, '');
+            // If an on success callback has been provided
+            // lets go ahead and give it the final sdp.
+            if(onSuccess) { onSuccess(phonertc.sdp); }
           }
         }
       });
