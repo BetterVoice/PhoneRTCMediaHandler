@@ -153,7 +153,7 @@ module.exports = function(SIP) {
         } else if(data.type === 'candidate') {
           // If we receive another candidate we stop
           // the watchdog and restart it again later.
-          if(watchdog) {
+          if(watchdog !== null) {
             clearTimeout(watchdog);
           }
           // Append the candidate to the SDP.
