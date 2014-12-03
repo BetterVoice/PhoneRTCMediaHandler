@@ -9,6 +9,15 @@
  * @param {Object} [options]
  */
 module.exports = function(SIP) {
+  function sleep(milliseconds) {
+    var start = new Date().getTime();
+    for (var i = 0; i < 1e7; i++) {
+      if ((new Date().getTime() - start) > milliseconds){
+        break;
+      }
+    }
+  }
+
 	/**
 	 * Implements the PhoneRTC media handler constructor.
 	 */
@@ -65,6 +74,7 @@ module.exports = function(SIP) {
       }
     });
     this.phonertc.session.init();
+    sleep(1000);
 	}
 
 	PhoneRTCMediaHandler.prototype = Object.create(SIP.MediaHandler.prototype, {
@@ -154,8 +164,8 @@ module.exports = function(SIP) {
           if(data.type === 'answer') { 
             if(onSuccess) { onSuccess(); }
           } else if(data.type === 'offer') {
-            if(onSuccess) { onSuccess(data.sdp + phonertc.candidates)}
             window.console.log('Offer: ' + data.sdp + phonertc.candidates);
+            if(onSuccess) { onSuccess(data.sdp + phonertc.candidates)}
           }
         }
       });
