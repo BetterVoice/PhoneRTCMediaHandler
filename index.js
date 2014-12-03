@@ -62,7 +62,6 @@ module.exports = function(SIP) {
       var candidate = "a=" + data.candidate + "\r\n";
       if(data.id === 'audio') {
         this.phonertc.candidates += candidate;
-        window.console.log('Candidates: ' + this.phonertc.candidates);
       }
     });
     this.phonertc.session.init();
