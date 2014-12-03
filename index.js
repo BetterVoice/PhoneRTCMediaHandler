@@ -45,16 +45,8 @@ module.exports = function(SIP) {
   		 * - connected
   		 * - muted
        */
-      'session': new cordova.plugins.phonertc.Session({
-        turn: this.turnServer,
-        streams: {
-          audio: true,
-          video: false
-        }
-      }),
   		'state': 'disconnected'
   	};
-    this.phonertc.session.init();
 	}
 
 	PhoneRTCMediaHandler.prototype = Object.create(SIP.MediaHandler.prototype, {
@@ -138,6 +130,20 @@ module.exports = function(SIP) {
   	startSession: {writable: true, value: function startSession(sdp, onSuccess, onFailure) {
       var phonertc = this.phonertc;
   		phonertc.role = sdp === null ? 'caller' : 'callee';
+  		var config = {
+  			isInitiator: phonertc.role === 'caller',
+    		turn: this.turnServer,
+    		streams: {
+    			audio: true,
+    			video: false
+    		}
+  		};
+      // Unfortunately, there is no message to let us know
+      // that PhoneRTC has finished gathering ice candidates.
+      // We use a watchdog to make sure all the ICE candidates
+      // are allocated before returning the SDP.
+      var watchdog = null;
+      phonertc.session = new cordova.plugins.phonertc.Session(config);
       phonertc.session.on('sendMessage', function (data) {
         if(data.type === 'offer' || data.type === 'answer') {
           phonertc.sdp = data.sdp;
@@ -169,8 +175,7 @@ module.exports = function(SIP) {
         phonertc.session.receiveMessage({'type': 'offer', 'sdp': sdp});
       }
       // Start the media.
-      var isInitiator = phonertc.role === 'caller';
-      phonertc.session.call(isInitiator);
+      phonertc.session.call();
   	}}
 	});
 
