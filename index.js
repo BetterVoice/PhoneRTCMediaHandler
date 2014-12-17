@@ -83,12 +83,14 @@ module.exports = function(SIP) {
       var isNewCall = !phonertc.session;
   		if(isNewCall) {
         this.startSession(sdp, onSuccess, onFailure);
-        var session = this.phonertc.session;
-        if(phonertc.role === 'caller') {
-          session.receiveMessage({'type': 'answer', 'sdp': sdp});
-          onSuccess();
-        }
       }
+  		var session = this.phonertc.session;
+  		if(phonertc.role === 'caller') {
+        if(phonertc.state === 'disconnected') {
+          session.receiveMessage({'type': 'answer', 'sdp': sdp});
+        }
+        onSuccess();
+  		}
   		this.phonertc.state = 'connected';
   	}},
 
