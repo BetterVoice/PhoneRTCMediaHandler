@@ -71,7 +71,7 @@ module.exports = function(SIP) {
   	getDescription: {writable: true, value: function getDescription(onSuccess, onFailure, mediaHint) {
       var phonertc = this.phonertc;
       var isInitiator = !phonertc.session;
-      window.console.log('getDescription()');
+      window.console.log('getDescription(' + phonertc.sdp + ')');
   		if(isInitiator) {
         this.startSession(null, onSuccess, onFailure);
       } else {
