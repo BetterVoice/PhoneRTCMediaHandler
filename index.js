@@ -177,6 +177,12 @@ module.exports = function(SIP) {
           }, 500);
         }
       });
+
+      // Handle renegotiations which are necessary for hold/unhold and mute/unmute.
+      phonertc.session.on('renegotiate', function() {
+        window.console.log('Renegotiate Called!');
+      });
+
       // If we received a session description pass it on to the
       // PhoneRTC plugin.
       if(phonertc.role === 'callee') {
