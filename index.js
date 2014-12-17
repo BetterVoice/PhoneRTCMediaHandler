@@ -100,22 +100,20 @@ module.exports = function(SIP) {
   	}},
 
   	mute: {writable: true, value: function mute(options) {
-  		var state = this.phonertc.state;
+      var phonertc = this.phonertc;
+  		var state = phonertc.state;
   		if(state === 'connected') {
-  			var session = this.phonertc.session;
-  			session.streams.audio = false;
-				session.renegotiate();
-  			this.phonertc.state = 'muted';
+  			phonertc.session.mute();
+  			phonertc.state = 'muted';
   		}
   	}},
 
   	unmute: {writable: true, value: function unmute(options) {
-  		var state = this.phonertc.state;
+      var phonertc = this.phonertc;
+  		var state = phonertc.state;
   		if(state === 'muted') {
-  			var session = this.phonertc.session;
-  			session.streams.audio = true;
-				session.renegotiate();
-  			this.phonertc.state = 'connected';
+  			phonertc.session.unmute();
+  			phonertc.state = 'connected';
   		}
   	}},
 
