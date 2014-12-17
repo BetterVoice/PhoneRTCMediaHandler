@@ -86,9 +86,7 @@ module.exports = function(SIP) {
       }
   		var session = this.phonertc.session;
   		if(phonertc.role === 'caller') {
-        if(phonertc.state === 'disconnected') {
-          session.receiveMessage({'type': 'answer', 'sdp': sdp});
-        }
+  			session.receiveMessage({'type': 'answer', 'sdp': sdp});
         onSuccess();
   		}
   		this.phonertc.state = 'connected';
@@ -177,12 +175,6 @@ module.exports = function(SIP) {
           }, 500);
         }
       });
-
-      // Handle renegotiations which are necessary for hold/unhold and mute/unmute.
-      phonertc.session.on('renegotiate', function() {
-        window.console.log('Renegotiate Called!');
-      });
-
       // If we received a session description pass it on to the
       // PhoneRTC plugin.
       if(phonertc.role === 'callee') {
