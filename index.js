@@ -173,9 +173,9 @@ module.exports = function(SIP) {
           var fingerprint = null, ufrag = null, pwd = null;
           var lines = data.sdp.split('\r\n');
           for(var index = 0; index < lines.length; index++) {
-            if(lines[index].match(/a=fingerprint:.*\r\n/g)) fingerprint = lines[index];
-            if(lines[index].match(/a=ice-ufrag:.*\r\n/g)) ufrag = lines[index];
-            if(lines[index].match(/a=ice-pwd:.*\r\n/g)) pwd = lines[index];
+            if(lines[index].match(/a=fingerprint:.*/g)) fingerprint = lines[index];
+            if(lines[index].match(/a=ice-ufrag:.*/g)) ufrag = lines[index];
+            if(lines[index].match(/a=ice-pwd:.*/g)) pwd = lines[index];
           }
           window.console.log('************************************************');
           window.console.log(lines);
