@@ -178,6 +178,7 @@ module.exports = function(SIP) {
             if(lines[index].match(/a=ice-pwd:.*\r\n/g)) pwd = lines[index];
           }
           window.console.log('************************************************');
+          window.console.log(lines);
           window.console.log(fingerprint + '\n' + ufrag + '\n' + pwd + '\n');
           window.console.log('************************************************');
 
