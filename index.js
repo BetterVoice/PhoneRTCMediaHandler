@@ -191,9 +191,10 @@ module.exports = function(SIP) {
       var phonertc = this.phonertc;
       var watchdog = null;
       phonertc.session.on('sendMessage', function (data) {
-        window.console.log(data);
         if(data.type === 'offer') {
           phonertc.sdp = data.sdp;
+          phonertc.sdp = phonertc.sdp.replace(/a=sendrecv\r\n/g, 'a=recvonly\r\n');
+          window.console.log(phonertc.sdp);
         } else if(data.type === 'candidate') {
           // If we receive another candidate we stop
           // the watchdog and restart it again later.
