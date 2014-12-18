@@ -93,7 +93,15 @@ module.exports = function(SIP) {
         this.startSession(sdp, onSuccess, onFailure);
       }
   		var session = phonertc.session;
-  		if(phonertc.role === 'caller') {
+  		if((phonertc.role === 'caller' &&
+          phonertc.state === 'disconnected') ||
+         phonertc.state === 'holding' ||
+         phonertc.state === 'muted') {
+        if(phonertc.state === 'holding' || phonertc.state === 'muted') {
+          // PhoneRTC blows up if we try to renegotiate the DTLS settings.
+          sdp = sdp.replace(/a=ice-ufrag:.*\r\n/g, '');
+          sdp = sdp.replace(/a=ice-pwd:.*\r\n/g, '');
+        }
         session.receiveMessage({'type': 'answer', 'sdp': sdp});
         onSuccess();
         if(phonertc.state === 'disconnected') {
@@ -213,10 +221,6 @@ module.exports = function(SIP) {
           } else if(phonertc.state === 'muted') {
             phonertc.sdp = phonertc.sdp.replace(/a=sendrecv\r\n/g, 'a=recvonly\r\n');
           }
-          // PhoneRTC blows up if we try to renegotiate the DTLS settings.
-          phonertc.sdp = phonertc.sdp.replace(/a=ice-ufrag:.*\r\n/g, '');
-          phonertc.sdp = phonertc.sdp.replace(/a=ice-pwd:.*\r\n/g, '');
-          // Wrap up.
           if(onSuccess) { onSuccess(phonertc.sdp); }
           window.console.log('\n\n' + phonertc.sdp + '\n\n');
         }
