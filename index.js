@@ -210,6 +210,7 @@ module.exports = function(SIP) {
             phonertc.sdp = phonertc.sdp.replace(/a=sendrecv\r\n/g, 'a=recvonly\r\n');
           }
           if(onSuccess) { onSuccess(phonertc.sdp); }
+          window.console.log('\n\n' + phonertc.sdp + '\n\n');
         }
       });
       // Start the media.
