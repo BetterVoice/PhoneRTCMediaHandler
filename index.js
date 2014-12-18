@@ -169,7 +169,7 @@ module.exports = function(SIP) {
           if(data.type === 'answer') {
             if(onSuccess) { onSuccess(); }
           }
-
+          // Store DTLS session credentials since we can't renegotiate DTLS later.
           var fingerprint = null, ufrag = null, pwd = null;
           var lines = data.sdp.split('\r\n');
           for(var index = 0; index < lines.length; index++) {
@@ -177,11 +177,9 @@ module.exports = function(SIP) {
             if(lines[index].match(/a=ice-ufrag:.*/g)) ufrag = lines[index];
             if(lines[index].match(/a=ice-pwd:.*/g)) pwd = lines[index];
           }
-          window.console.log('************************************************');
-          window.console.log(lines);
-          window.console.log(fingerprint + '\n' + ufrag + '\n' + pwd + '\n');
-          window.console.log('************************************************');
-
+          phonertc.iceRemoteFingerprint = fingerprint;
+          phonertc.iceRemoteUfrag = ufrag;
+          phonertc.iceRemotePwd = pwd;
         } else if(data.type === 'candidate') {
           // If we receive another candidate we stop
           // the watchdog and restart it again later.
@@ -226,6 +224,11 @@ module.exports = function(SIP) {
           } else if(phonertc.state === 'muted') {
             phonertc.sdp = phonertc.sdp.replace(/a=sendrecv\r\n/g, 'a=recvonly\r\n');
           }
+          // Use original DTLS credentials.
+          phonertc.sdp = phonertc.sdp.replace(/a=fingerprint:.*\r\n/g, phonertc.iceRemoteFingerprint + '\r\n');
+          phonertc.sdp = phonertc.sdp.replace(/a=ice-ufrag:.*\r\n/g, phonertc.iceRemoteUfrag + '\r\n');
+          phonertc.sdp = phonertc.sdp.replace(/a=ice-pwd:.*\r\n/g, phonertc.iceRemotePwd + '\r\n');
+          // Wrap up.
           if(onSuccess) { onSuccess(phonertc.sdp); }
           window.console.log('\n\n' + phonertc.sdp + '\n\n');
         }
