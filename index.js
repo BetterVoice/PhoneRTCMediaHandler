@@ -97,6 +97,9 @@ module.exports = function(SIP) {
           phonertc.state === 'disconnected') ||
          phonertc.state === 'holding' ||
          phonertc.state === 'muted') {
+        if(phonertc.state === 'holding' || phonertc.state === 'muted') {
+          sdp = sdp.replace(/a=fingerprint.*\r\n/g, '');
+        }
         session.receiveMessage({'type': 'answer', 'sdp': sdp});
         onSuccess();
         if(phonertc.state === 'disconnected') {
@@ -185,8 +188,6 @@ module.exports = function(SIP) {
           }
           // Start the watchdog.
           watchdog = setTimeout(function() {
-            // If an on success callback has been provided
-            // lets go ahead and give it the final sdp.
             if(onSuccess) { onSuccess(phonertc.sdp); }
           }, 500);
         }
