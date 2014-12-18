@@ -193,7 +193,7 @@ module.exports = function(SIP) {
       phonertc.session.on('sendMessage', function (data) {
         if(data.type === 'offer') {
           phonertc.sdp = data.sdp;
-          phonertc.sdp = phonertc.sdp.replace(/a=sendrecv\r\n/g, 'a=recvonly\r\n');
+          phonertc.sdp = phonertc.sdp.replace(/a=sendrecv\r\n/g, 'a=inactive\r\n');
           window.console.log(phonertc.sdp);
         } else if(data.type === 'candidate') {
           // If we receive another candidate we stop
