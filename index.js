@@ -190,8 +190,8 @@ module.exports = function(SIP) {
     updateSession: {writable: true, value: function updateSession(onSuccess, onFailure) {
       var phonertc = this.phonertc;
       var watchdog = null;
-      window.console.log(data);
       phonertc.session.on('sendMessage', function (data) {
+        window.console.log(data);
         if(data.type === 'offer') {
           phonertc.sdp = data.sdp;
         } else if(data.type === 'candidate') {
