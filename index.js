@@ -190,10 +190,10 @@ module.exports = function(SIP) {
     updateSession: {writable: true, value: function updateSession(onSuccess, onFailure) {
       var phonertc = this.phonertc;
       var watchdog = null;
+      window.console.log(data);
       phonertc.session.on('sendMessage', function (data) {
         if(data.type === 'offer') {
           phonertc.sdp = data.sdp;
-          window.console.log(data);
         } else if(data.type === 'candidate') {
           // If we receive another candidate we stop
           // the watchdog and restart it again later.
@@ -219,7 +219,7 @@ module.exports = function(SIP) {
         }
       });
       // Start the media.
-      phonertc.session.call();
+      phonertc.session.renegotiate();
     }}
 	});
 
