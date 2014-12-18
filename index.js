@@ -43,6 +43,7 @@ module.exports = function(SIP) {
   		 * Possible states are:
   		 * - disconnected
   		 * - connected
+       * - holding
   		 * - muted
        */
   		'state': 'disconnected'
@@ -91,7 +92,6 @@ module.exports = function(SIP) {
       }
   		var session = this.phonertc.session;
   		if(phonertc.role === 'caller') {
-        window.console.log(sdp);
   			session.receiveMessage({'type': 'answer', 'sdp': sdp});
         onSuccess();
         phonertc.state = 'connected';
@@ -124,11 +124,21 @@ module.exports = function(SIP) {
   	}},
 
     hold: {writable: true, value: function hold () {
-      this.mute();
+      var phonertc = this.phonertc;
+      var state = phonertc.state;
+      if(state === 'connected') {
+        phonertc.session.mute();
+        phonertc.state = 'holding';
+      }
     }},
 
     unhold: {writable: true, value: function unhold () {
-      this.unmute();
+      var phonertc = this.phonertc;
+      var state = phonertc.state;
+      if(state === 'holding') {
+        phonertc.session.unmute();
+        phonertc.state = 'connected';
+      }
     }},
 
   	// Local Methods.
@@ -192,12 +202,14 @@ module.exports = function(SIP) {
       var phonertc = this.phonertc;
       var watchdog = null;
       phonertc.session.on('sendMessage', function (data) {
-        window.console.log('\n\n' + phonertc.sdp + '\n\n');
         if(data.type === 'offer') {
           phonertc.sdp = data.sdp;
-          phonertc.sdp = phonertc.sdp.replace(/a=sendrecv\r\n/g, 'a=inactive\r\n');
+          if(phonertc.state === 'holding') {
+            phonertc.sdp = phonertc.sdp.replace(/a=sendrecv\r\n/g, 'a=inactive\r\n');
+          } else if(phonertc.state === 'muted') {
+            phonertc.sdp = phonertc.sdp.replace(/a=sendrecv\r\n/g, 'a=recvonly\r\n');
+          }
           if(onSuccess) { onSuccess(phonertc.sdp); }
-          window.console.log('\n\n' + phonertc.sdp + '\n\n');
         }
       });
       // Start the media.
