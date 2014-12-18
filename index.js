@@ -91,6 +91,7 @@ module.exports = function(SIP) {
       }
   		var session = this.phonertc.session;
   		if(phonertc.role === 'caller') {
+        window.console.log(sdp);
   			session.receiveMessage({'type': 'answer', 'sdp': sdp});
         onSuccess();
         phonertc.state = 'connected';
