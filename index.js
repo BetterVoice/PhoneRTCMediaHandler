@@ -192,32 +192,12 @@ module.exports = function(SIP) {
       var phonertc = this.phonertc;
       var watchdog = null;
       phonertc.session.on('sendMessage', function (data) {
+        window.console.log('\n\n' + phonertc.sdp + '\n\n');
         if(data.type === 'offer') {
           phonertc.sdp = data.sdp;
           phonertc.sdp = phonertc.sdp.replace(/a=sendrecv\r\n/g, 'a=inactive\r\n');
-          window.console.log(phonertc.sdp);
-        } else if(data.type === 'candidate') {
-          // If we receive another candidate we stop
-          // the watchdog and restart it again later.
-          if(watchdog !== null) {
-            clearTimeout(watchdog);
-          }
-          // Append the candidate to the SDP.
-          var candidate = "a=" + data.candidate + "\r\n";
-          if(data.id === 'audio') {
-            phonertc.sdp += candidate;
-          }
-          // Start the watchdog.
-          watchdog = setTimeout(function() {
-            // Finish session description before we return it.
-            if(phonertc.role !== 'caller') {
-              phonertc.sdp = phonertc.sdp.replace('a=setup:actpass', 'a=setup:passive');
-            }
-            phonertc.sdp = phonertc.sdp.replace(/a=crypto.*\r\n/g, '');
-            // If an on success callback has been provided
-            // lets go ahead and give it the final sdp.
-            if(onSuccess) { onSuccess(phonertc.sdp); }
-          }, 500);
+          if(onSuccess) { onSuccess(phonertc.sdp); }
+          window.console.log('\n\n' + phonertc.sdp + '\n\n');
         }
       });
       // Start the media.
