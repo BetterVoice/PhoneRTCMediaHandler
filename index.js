@@ -94,11 +94,13 @@ module.exports = function(SIP) {
       }
   		var session = phonertc.session;
   		if(phonertc.role === 'caller') {
-        if(state === 'disconnected') {
+        if(phonertc.state === 'disconnected') {
           session.receiveMessage({'type': 'answer', 'sdp': sdp});
-          phonertc.state = 'connected';
         }
         onSuccess();
+        if(phonertc.state === 'disconnected') {
+          phonertc.state = 'connected';
+        }
   		}
   	}},
 
