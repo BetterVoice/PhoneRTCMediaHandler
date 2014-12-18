@@ -70,30 +70,31 @@ module.exports = function(SIP) {
 
   	getDescription: {writable: true, value: function getDescription(onSuccess, onFailure, mediaHint) {
       var phonertc = this.phonertc;
-      var isInitiator = !phonertc.session;
-      window.console.log('getDescription(' + phonertc.sdp + ')');
-  		if(isInitiator) {
+      var isInitiator = !phonertc.role || phonertc.role === 'caller';
+  		if(isInitiator && phonertc.state === 'disconnected') {
         this.startSession(null, onSuccess, onFailure);
       } else {
-        onSuccess(phonertc.sdp);
+        if(phonertc.state === 'connected') {
+          this.updateSession(onSuccess, onFailure);
+        } else if(phonertc.state === 'disconnected') {
+          onSuccess(phonertc.sdp);
+          phonertc.state = 'connected';
+        }
       }
   	}},
 
   	setDescription: {writable: true, value: function setDescription(sdp, onSuccess, onFailure) {
   		var phonertc = this.phonertc;
-      var isNewCall = !phonertc.session;
-      window.console.log('setDescription(' + sdp + ')');
+      var isNewCall = !phonertc.role;
   		if(isNewCall) {
         this.startSession(sdp, onSuccess, onFailure);
       }
   		var session = this.phonertc.session;
   		if(phonertc.role === 'caller') {
-        if(phonertc.state === 'disconnected') {
-          session.receiveMessage({'type': 'answer', 'sdp': sdp});
-        }
+  			session.receiveMessage({'type': 'answer', 'sdp': sdp});
         onSuccess();
+        phonertc.state = 'connected';
   		}
-  		this.phonertc.state = 'connected';
   	}},
 
   	isMuted: {writable: true, value: function isMuted() {
@@ -184,7 +185,42 @@ module.exports = function(SIP) {
       }
       // Start the media.
       phonertc.session.call();
-  	}}
+  	}},
+
+    updateSession: {writable: true, value: function updateSession(onSuccess, onFailure) {
+      var phonertc = this.phonertc;
+      var watchdog = null;
+      phonertc.role = sdp === null ? 'caller' : 'callee';
+      phonertc.session.on('sendMessage', function (data) {
+        if(data.type === 'offer') {
+          phonertc.sdp = data.sdp;
+        } else if(data.type === 'candidate') {
+          // If we receive another candidate we stop
+          // the watchdog and restart it again later.
+          if(watchdog !== null) {
+            clearTimeout(watchdog);
+          }
+          // Append the candidate to the SDP.
+          var candidate = "a=" + data.candidate + "\r\n";
+          if(data.id === 'audio') {
+            phonertc.sdp += candidate;
+          }
+          // Start the watchdog.
+          watchdog = setTimeout(function() {
+            // Finish session description before we return it.
+            if(phonertc.role !== 'caller') {
+              phonertc.sdp = phonertc.sdp.replace('a=setup:actpass', 'a=setup:passive');
+            }
+            phonertc.sdp = phonertc.sdp.replace(/a=crypto.*\r\n/g, '');
+            // If an on success callback has been provided
+            // lets go ahead and give it the final sdp.
+            if(onSuccess) { onSuccess(phonertc.sdp); }
+          }, 500);
+        }
+      });
+      // Start the media.
+      phonertc.session.call();
+    }}
 	});
 
 	// Return the PhoneRTC media handler implementation.
