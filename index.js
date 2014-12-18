@@ -74,7 +74,7 @@ module.exports = function(SIP) {
   		if(isInitiator && phonertc.state === 'disconnected') {
         this.startSession(null, onSuccess, onFailure);
       } else {
-        if(phonertc.state === 'connected') {
+        if(phonertc.state === 'connected' || phonertc.state === 'muted') {
           this.updateSession(onSuccess, onFailure);
         } else if(phonertc.state === 'disconnected') {
           onSuccess(phonertc.sdp);
