@@ -92,19 +92,13 @@ module.exports = function(SIP) {
   		if(isNewCall) {
         this.startSession(sdp, onSuccess, onFailure);
       }
-      var state = phonertc.state;
-      if(state === 'connected' ||
-         state === 'holding' ||
-         state === 'muted') {
-        sdp = sdp.replace(/a=fingerprint.*\r\n/g, '');
-      }
   		var session = phonertc.session;
   		if(phonertc.role === 'caller') {
-  			session.receiveMessage({'type': 'answer', 'sdp': sdp});
-        onSuccess();
         if(state === 'disconnected') {
+          session.receiveMessage({'type': 'answer', 'sdp': sdp});
           phonertc.state = 'connected';
         }
+        onSuccess();
   		}
   	}},
 
