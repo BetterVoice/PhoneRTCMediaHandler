@@ -169,12 +169,18 @@ module.exports = function(SIP) {
           if(data.type === 'answer') {
             if(onSuccess) { onSuccess(); }
           }
-          var fingerprint = data.sdp.search(/a=fingerprint:.*\r\n/g);
-          var ufrag = data.sdp.search(/a=ice-ufrag:.*\r\n/g);
-          var pwd = data.sdp.search(/a=ice-pwd:.*\r\n/g);
+
+          var fingerprint = null, ufrag = null, pwd = null;
+          var lines = data.sdp.split('\r\n');
+          for(var index = 0; index < lines.length; index++) {
+            if(lines[index].match(/a=fingerprint:.*\r\n/g)) fingerprint = lines[index];
+            if(lines[index].match(/a=ice-ufrag:.*\r\n/g)) ufrag = lines[index];
+            if(lines[index].match(/a=ice-pwd:.*\r\n/g)) pwd = lines[index];
+          }
           window.console.log('************************************************');
           window.console.log(fingerprint + '\n' + ufrag + '\n' + pwd + '\n');
           window.console.log('************************************************');
+
         } else if(data.type === 'candidate') {
           // If we receive another candidate we stop
           // the watchdog and restart it again later.
