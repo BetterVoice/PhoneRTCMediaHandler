@@ -97,9 +97,6 @@ module.exports = function(SIP) {
           phonertc.state === 'disconnected') ||
          phonertc.state === 'holding' ||
          phonertc.state === 'muted') {
-        if(phonertc.state === 'holding' || phonertc.state === 'muted') {
-          sdp = sdp.replace(/a=fingerprint.*\r\n/g, '');
-        }
         session.receiveMessage({'type': 'answer', 'sdp': sdp});
         onSuccess();
         if(phonertc.state === 'disconnected') {
