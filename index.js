@@ -169,9 +169,9 @@ module.exports = function(SIP) {
           if(data.type === 'answer') {
             if(onSuccess) { onSuccess(); }
           }
-          var fingerprint = data.sdp.search(/a=fingerprint:.*\r\n/g));
-          var ufrag = data.sdp.search(/a=ice-ufrag:.*\r\n/g));
-          var pwd = data.sdp.search(/a=ice-pwd:.*\r\n/g));
+          var fingerprint = data.sdp.search(/a=fingerprint:.*\r\n/g);
+          var ufrag = data.sdp.search(/a=ice-ufrag:.*\r\n/g);
+          var pwd = data.sdp.search(/a=ice-pwd:.*\r\n/g);
           window.console.log('************************************************');
           window.console.log(fingerprint + '\n' + ufrag + '\n' + pwd + '\n');
           window.console.log('************************************************');
