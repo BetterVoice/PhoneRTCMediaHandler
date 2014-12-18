@@ -185,11 +185,6 @@ module.exports = function(SIP) {
           }
           // Start the watchdog.
           watchdog = setTimeout(function() {
-            // Finish session description before we return it.
-            if(phonertc.role !== 'caller') {
-              phonertc.sdp = phonertc.sdp.replace('a=setup:actpass', 'a=setup:passive');
-            }
-            phonertc.sdp = phonertc.sdp.replace(/a=crypto.*\r\n/g, '');
             // If an on success callback has been provided
             // lets go ahead and give it the final sdp.
             if(onSuccess) { onSuccess(phonertc.sdp); }
