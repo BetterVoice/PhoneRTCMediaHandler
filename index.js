@@ -97,10 +97,22 @@ module.exports = function(SIP) {
           phonertc.state === 'disconnected') ||
          phonertc.state === 'holding' ||
          phonertc.state === 'muted') {
-        if(phonertc.state === 'holding' || phonertc.state === 'muted') {
-          // PhoneRTC blows up if we try to renegotiate the DTLS settings.
-          sdp = sdp.replace(/a=ice-ufrag:.*\r\n/g, '');
-          sdp = sdp.replace(/a=ice-pwd:.*\r\n/g, '');
+        if(phonertc.state === 'disconnected') {
+          // Store DTLS session credentials since we can't renegotiate DTLS later.
+          var fingerprint = null, ufrag = null, pwd = null;
+          var lines = sdp.split('\r\n');
+          for(var index = 0; index < lines.length; index++) {
+            if(lines[index].match(/a=fingerprint:.*/g)) fingerprint = lines[index];
+            if(lines[index].match(/a=ice-ufrag:.*/g)) ufrag = lines[index];
+            if(lines[index].match(/a=ice-pwd:.*/g)) pwd = lines[index];
+          }
+          phonertc.iceRemoteFingerprint = fingerprint;
+          phonertc.iceRemoteUfrag = ufrag;
+          phonertc.iceRemotePwd = pwd;
+        } else {
+          sdp.replace(/a=fingerprint:.*\r\n/g, phonertc.iceRemoteFingerprint + '\r\n');
+          sdp.replace(/a=ice-ufrag:.*\r\n/g, phonertc.iceRemoteUfrag + '\r\n');
+          sdp.replace(/a=ice-pwd:.*\r\n/g, phonertc.iceRemotePwd + '\r\n');
         }
         session.receiveMessage({'type': 'answer', 'sdp': sdp});
         onSuccess();
