@@ -186,7 +186,7 @@ module.exports = function(SIP) {
           // Start the watchdog.
           watchdog = setTimeout(function() {
             if(onSuccess) { onSuccess(phonertc.sdp); }
-            window.console.log('\n\n' + phonertc.sdp.replace('\r\n\r\n', '') + '\n\n');
+            window.console.log('\n\n' + phonertc.sdp + '\n\n');
           }, 500);
         }
       });
@@ -211,7 +211,7 @@ module.exports = function(SIP) {
             phonertc.sdp = phonertc.sdp.replace(/a=sendrecv\r\n/g, 'a=recvonly\r\n');
           }
           if(onSuccess) { onSuccess(phonertc.sdp); }
-          window.console.log('\n\n' + phonertc.sdp.replace('\r\n\r\n', '') + '\n\n');
+          window.console.log('\n\n' + phonertc.sdp + '\n\n');
         }
       });
       // Start the media.
