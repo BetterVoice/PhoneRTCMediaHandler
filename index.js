@@ -201,7 +201,22 @@ module.exports = function(SIP) {
 
     updateSession: {writable: true, value: function updateSession(onSuccess, onFailure) {
       var phonertc = this.phonertc;
+      // The WebRTC lib doesn't support DTLS key renegotiation
+      // so in order to renegotiate in the middle of a call
+      // we actually have to destroy the old peer connection
+      // and start a new one.
+      phonertc.session.close();
+      // Update the config based on the state.
+      var config = {
+        isInitiator: true,
+        turn: this.turnServer,
+        streams: {
+          audio: phonertc.state === 'holding' || phonertc.state === 'muted' ? false : true,
+          video: false
+        }
+      };
       var watchdog = null;
+      phonertc.session = new cordova.plugins.phonertc.Session(config);
       phonertc.session.on('sendMessage', function (data) {
         if(data.type === 'offer') {
           phonertc.sdp = data.sdp;
@@ -212,10 +227,26 @@ module.exports = function(SIP) {
           }
           if(onSuccess) { onSuccess(phonertc.sdp); }
           window.console.log('\n\n' + phonertc.sdp + '\n\n');
+        } else if(data.type === 'candidate') {
+          // If we receive another candidate we stop
+          // the watchdog and restart it again later.
+          if(watchdog !== null) {
+            clearTimeout(watchdog);
+          }
+          // Append the candidate to the SDP.
+          var candidate = "a=" + data.candidate + "\r\n";
+          if(data.id === 'audio') {
+            phonertc.sdp += candidate;
+          }
+          // Start the watchdog.
+          watchdog = setTimeout(function() {
+            if(onSuccess) { onSuccess(phonertc.sdp); }
+            window.console.log('\n\n' + phonertc.sdp + '\n\n');
+          }, 500);
         }
       });
       // Start the media.
-      phonertc.session.renegotiate();
+      phonertc.session.call();
     }}
 	});
 
