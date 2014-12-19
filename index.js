@@ -211,7 +211,7 @@ module.exports = function(SIP) {
         isInitiator: true,
         turn: this.turnServer,
         streams: {
-          audio: phonertc.state === 'holding' || phonertc.state === 'muted' ? false : true,
+          audio: true,
           video: false
         }
       };
@@ -225,7 +225,6 @@ module.exports = function(SIP) {
           } else if(phonertc.state === 'muted') {
             phonertc.sdp = phonertc.sdp.replace(/a=sendrecv\r\n/g, 'a=recvonly\r\n');
           }
-          if(onSuccess) { onSuccess(phonertc.sdp); }
           window.console.log('\n\n' + phonertc.sdp + '\n\n');
         } else if(data.type === 'candidate') {
           // If we receive another candidate we stop
