@@ -87,7 +87,6 @@ module.exports = function(SIP) {
   	}},
 
   	setDescription: {writable: true, value: function setDescription(sdp, onSuccess, onFailure) {
-      window.console.log('************************************** WTF! *****************************************');
   		var phonertc = this.phonertc;
       var isNewCall = !phonertc.role;
   		if(isNewCall) {
@@ -96,6 +95,7 @@ module.exports = function(SIP) {
   		var session = phonertc.session;
   		if((phonertc.role === 'caller' &&
           phonertc.state === 'disconnected') ||
+         phonertc.state === 'connected' ||
          phonertc.state === 'holding' ||
          phonertc.state === 'muted') {
         session.receiveMessage({'type': 'answer', 'sdp': sdp});
