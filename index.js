@@ -87,6 +87,7 @@ module.exports = function(SIP) {
   	}},
 
   	setDescription: {writable: true, value: function setDescription(sdp, onSuccess, onFailure) {
+      window.console.log('************************************** WTF! *****************************************');
   		var phonertc = this.phonertc;
       var isNewCall = !phonertc.role;
   		if(isNewCall) {
@@ -224,6 +225,11 @@ module.exports = function(SIP) {
             phonertc.sdp = phonertc.sdp.replace(/a=sendrecv\r\n/g, 'a=inactive\r\n');
           } else if(phonertc.state === 'muted') {
             phonertc.sdp = phonertc.sdp.replace(/a=sendrecv\r\n/g, 'a=recvonly\r\n');
+          }
+          if(phonertc.role === 'caller') {
+
+          } else {
+
           }
           window.console.log('\n\n' + phonertc.sdp + '\n\n');
         } else if(data.type === 'candidate') {
