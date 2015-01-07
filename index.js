@@ -113,7 +113,9 @@ module.exports = function(SIP) {
         this.startSession(sdp, onSuccess, onFailure);
       }
   		var session = phonertc.session;
-  		if(phonertc.role === 'caller' && phonertc.state === 'disconnected') {
+  		if((phonertc.role === 'caller' && phonertc.state === 'disconnected') ||
+         phonertc.state === 'connected' ||
+         phonertc.state === 'holding') {
         session.receiveMessage({'type': 'answer', 'sdp': sdp});
         onSuccess();
         if(phonertc.state === 'disconnected') {
