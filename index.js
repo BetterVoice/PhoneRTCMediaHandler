@@ -211,7 +211,11 @@ module.exports = function(SIP) {
           }
           // Start the watchdog.
           watchdog = setTimeout(function() {
-            if(onSuccess) { onSuccess(phonertc.sdp.replace(/a=sendrecv\r\n/g, '')); }
+            if(onSuccess) {
+              phonertc.sdp = phonertc.sdp.replace(/RTP\/SAVPF/g, 'UDP/TLS/RTP/SAVPF')
+                                         .replace(/a=sendrecv\r\n/g, '');
+              onSuccess(phonertc.sdp);
+            }
           }, 500);
         }
       });
