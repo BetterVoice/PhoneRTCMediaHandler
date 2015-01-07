@@ -75,6 +75,7 @@ module.exports = function(SIP) {
   		if(isInitiator && phonertc.state === 'disconnected') {
         this.startSession(null, onSuccess, onFailure);
       } else {
+        /*
         if(phonertc.state === 'holding' || phonertc.state == 'connected') {
           var watchdog = null;
           phonertc.session.on('sendMessage', function (data) {
@@ -100,6 +101,12 @@ module.exports = function(SIP) {
             }
           });
           phonertc.session.renegotiate();
+          */
+          if(phonertc.state === 'holding') {
+            onSuccess(phonertc.sdp.replace(/a=sendrecv\r\n/g, 'a=sendonly\r\n'));
+          } else {
+            onSuccess(phonertc.sdp.replace(/a=sendrecv\r\n/g, ''));
+          }
         } else {
           onSuccess(phonertc.sdp);
         }
