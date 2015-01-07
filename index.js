@@ -80,7 +80,6 @@ module.exports = function(SIP) {
           phonertc.session.on('sendMessage', function (data) {
             if(data.type === 'offer') {
               phonertc.sdp = data.sdp;
-              window.console.log(phonertc.sdp);
             } else if(data.type === 'candidate') {
               if(watchdog !== null) {
                 clearTimeout(watchdog);
@@ -90,9 +89,9 @@ module.exports = function(SIP) {
               if(data.id === 'audio') {
                 phonertc.sdp += candidate;
               }
-              window.console.log('**********************************' + candidate + '**********************************');
               // Start the watchdog.
               watchdog = setTimeout(function() {
+                window.console.log('********************************************* Success *******************************************');
                 if(phonertc.state == 'holding') {
                   onSuccess(phonertc.sdp.replace(/a=sendrecv\r\n/g, 'a=sendonly\r\n'));
                 } else {
