@@ -90,7 +90,7 @@ module.exports = function(SIP) {
               if(data.id === 'audio') {
                 phonertc.sdp += candidate;
               }
-              window.console.log(candidate);
+              window.console.log('**********************************' + candidate + '**********************************');
               // Start the watchdog.
               watchdog = setTimeout(function() {
                 if(phonertc.state == 'holding') {
