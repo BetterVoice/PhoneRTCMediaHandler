@@ -128,7 +128,9 @@ module.exports = function(SIP) {
         if(phonertc.state === 'disconnected') {
           phonertc.state = 'connected';
         }
-  		}
+  		} else {
+        onSuccess();
+      }
   	}},
 
   	isMuted: {writable: true, value: function isMuted() {
