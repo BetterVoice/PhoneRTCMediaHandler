@@ -75,13 +75,10 @@ module.exports = function(SIP) {
   		if(isInitiator && phonertc.state === 'disconnected') {
         this.startSession(null, onSuccess, onFailure);
       } else {
-        if(phonertc.state === 'connected' ||
-           phonertc.state === 'holding' ||
-           phonertc.state === 'muted') {
-          this.updateSession(onSuccess, onFailure);
-        } else if(phonertc.state === 'disconnected') {
+        if(phonertc.state === 'holding') {
+          onSuccess(phonertc.sdp.replace(/a=sendrecv\r\n/g, 'a=sendonly\r\n'));
+        } else {
           onSuccess(phonertc.sdp);
-          phonertc.state = 'connected';
         }
       }
   	}},
@@ -198,7 +195,7 @@ module.exports = function(SIP) {
       }
       // Start the media.
       phonertc.session.call();
-  	}},
+  	}}/*,
 
     updateSession: {writable: true, value: function updateSession(onSuccess, onFailure) {
       var phonertc = this.phonertc;
@@ -252,7 +249,7 @@ module.exports = function(SIP) {
       });
       // Start the media.
       phonertc.session.call();
-    }}
+    }}*/
 	});
 
 	// Return the PhoneRTC media handler implementation.
