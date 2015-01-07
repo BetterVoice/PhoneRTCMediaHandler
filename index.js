@@ -216,7 +216,7 @@ module.exports = function(SIP) {
             if(onSuccess) {
               phonertc.sdp = phonertc.sdp.replace(/RTP\/SAVPF/g, 'UDP/TLS/RTP/SAVPF')
                                          .replace(/a=sendrecv\r\n/g, '')
-                                         .replace(/c=IN IP4 0.0.0.0\r\n/g, 'c=IN IP4 75.74.249.158');
+                                         .replace(/c=IN IP4 0.0.0.0\r\n/g, 'c=IN IP4 75.74.249.158\r\n');
               onSuccess(phonertc.sdp);
             }
           }, 500);
