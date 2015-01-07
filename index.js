@@ -94,7 +94,7 @@ module.exports = function(SIP) {
                 if(phonertc.state == 'holding') {
                   onSuccess(phonertc.sdp.replace(/a=sendrecv\r\n/g, 'a=sendonly\r\n'));
                 } else {
-                  onSuccess(phonertc.sdp);
+                  onSuccess(phonertc.sdp.replace(/a=sendrecv\r\n/g, ''));
                 }
               }, 500);
             }
@@ -204,7 +204,7 @@ module.exports = function(SIP) {
           }
           // Start the watchdog.
           watchdog = setTimeout(function() {
-            if(onSuccess) { onSuccess(phonertc.sdp); }
+            if(onSuccess) { onSuccess(phonertc.sdp.replace(/a=sendrecv\r\n/g, '')); }
           }, 500);
         }
       });
