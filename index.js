@@ -180,7 +180,6 @@ module.exports = function(SIP) {
           // Start the watchdog.
           watchdog = setTimeout(function() {
             if(onSuccess) { onSuccess(phonertc.sdp); }
-            window.console.log('\n\n' + phonertc.sdp + '\n\n');
           }, 500);
         }
       });
