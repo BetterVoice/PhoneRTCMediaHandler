@@ -76,6 +76,7 @@ module.exports = function(SIP) {
         this.startSession(null, onSuccess, onFailure);
       } else {
         if(phonertc.state === 'holding' || phonertc.state == 'connected') {
+          var watchdog = null;
           phonertc.session.on('sendMessage', function (data) {
             if(data.type === 'offer') {
               phonertc.sdp = data.sdp;
