@@ -92,7 +92,7 @@ module.exports = function(SIP) {
               // Start the watchdog.
               watchdog = setTimeout(function() {
                 if(phonertc.state == 'holding') {
-                  onSuccess(phonertc.sdp.replace(/a=sendrecv\r\n/g, 'a=inactive\r\n'));
+                  onSuccess(phonertc.sdp.replace(/a=sendrecv\r\n/g, 'a=sendonly\r\n'));
                 } else {
                   onSuccess(phonertc.sdp);
                 }
