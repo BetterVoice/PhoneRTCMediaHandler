@@ -107,9 +107,11 @@ module.exports = function(SIP) {
           } else {
             onSuccess(phonertc.sdp.replace(/a=sendrecv\r\n/g, ''));
           }
+        /*
         } else {
           onSuccess(phonertc.sdp);
         }
+        */
       }
   	}},
 
