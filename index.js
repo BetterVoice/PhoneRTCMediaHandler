@@ -31,8 +31,7 @@ module.exports = function(SIP) {
 
 	PhoneRTCMediaHandler.prototype = Object.create(SIP.MediaHandler.prototype, {
 		/**
-		 * render() is called by sip.js so it must be defined but 
-		 * rendering is handled by the PhoneRTC plugin.
+		 * render() is called by sip.js so it must be defined.
 		 */
 		render: {writable: true, value: function render() { }},
 
