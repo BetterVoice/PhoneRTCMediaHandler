@@ -136,11 +136,13 @@ module.exports = function(SIP) {
       });
       phonertc.session.on('sendMessage', function (data) {
         if(data.type === 'offer' || data.type === 'answer') {
+          window.console.log(data.sdp);
           phonertc.sdp = data.sdp;
           if(data.type === 'answer') {
             if(onSuccess) { onSuccess(); }
           }
         } else if(data.type === 'candidate') {
+          window.console.log(data.candidate);
           // If we receive another candidate we stop
           // the watchdog and restart it again later.
           if(watchdog !== null) {
