@@ -56,7 +56,7 @@ module.exports = function(SIP) {
         if(phonertc.state === 'holding') {
           onSuccess(phonertc.sdp.replace(/a=sendrecv\r\n/g, 'a=sendonly\r\n'));
         } else {
-          onSuccess(phonertc.sdp.replace(/a=sendrecv\r\n/g, ''));
+          onSuccess(phonertc.sdp);
         }
       }
   	}},
@@ -154,10 +154,6 @@ module.exports = function(SIP) {
           // Start the watchdog.
           watchdog = setTimeout(function() {
             if(onSuccess) {
-              phonertc.sdp = phonertc.sdp.replace(/RTP\/SAVPF/g, 'UDP/TLS/RTP/SAVPF')
-                                         .replace(/a=sendrecv\r\n/g, '')
-                                         .replace(/c=IN IP4 0.0.0.0\r\n/g, 'c=IN IP4 75.74.249.158\r\n')
-                                         .replace(/a=rtcp:9 IN IP4 0.0.0.0\r\n/g, 'a=rtcp:9 IN IP4 75.74.249.158\r\n');
               onSuccess(phonertc.sdp);
             }
           }, 500);
