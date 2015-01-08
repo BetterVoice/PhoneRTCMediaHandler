@@ -138,10 +138,12 @@ module.exports = function(SIP) {
         if(data.type === 'offer' || data.type === 'answer') {
           window.console.log(data.sdp);
           phonertc.sdp = data.sdp;
-          if(data.type === 'answer') {
+          if(data.type === 'offer') {
+            if(onSuccess) { onSuccess(phonertc.sdp); }
+          } else if(data.type === 'answer') {
             if(onSuccess) { onSuccess(); }
           }
-        } else if(data.type === 'candidate') {
+        } /*else if(data.type === 'candidate') {
           window.console.log(data.candidate);
           // If we receive another candidate we stop
           // the watchdog and restart it again later.
@@ -159,7 +161,7 @@ module.exports = function(SIP) {
               onSuccess(phonertc.sdp);
             }
           }, 500);
-        }
+        }*/
       });
       // If we received a session description pass it on to the
       // PhoneRTC plugin.
