@@ -57,6 +57,9 @@ module.exports = function(SIP) {
           onSuccess(phonertc.sdp.replace(/a=sendrecv\r\n/g, 'a=sendonly\r\n'));
         } else {
           onSuccess(phonertc.sdp);
+          if(phonertc.state === 'disconnected') {
+            phonertc.state = 'connected';
+          }
         }
       }
   	}},
@@ -81,7 +84,8 @@ module.exports = function(SIP) {
 
   	isMuted: {writable: true, value: function isMuted() {
   	  return {
-  	    audio: this.phonertc.state === 'muted',
+  	    audio: this.phonertc.state === 'muted' ||
+               this.phonertc.state === 'holding',
   	    video: true
   	  };
   	}},
