@@ -2,4 +2,5 @@
 <plugin id="com.sipjs.phonertc" version="0.1.1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
     <name>PhoneRTCMediaHandler</name>
     <js-module name="mediahandler" src="index.js" />
+    <js-module name="mediahandlerlegacy" src="index-legacy.js" />
 </plugin>
